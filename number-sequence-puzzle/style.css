@@ -26,11 +26,11 @@ body {
 
 .game-container {
     width: 100%;
-    max-width: 500px;
+    max-width: min(500px, 90vw); /* Ensure it doesn't get too wide on very large screens, but uses 90vw on smaller */
     background: var(--card-bg);
     border-radius: 15px;
     box-shadow: 0 10px 30px var(--shadow-color);
-    padding: 20px;
+    padding: max(20px, 2vw); /* Responsive padding */
     box-sizing: border-box;
     text-align: center;
 }
@@ -101,22 +101,22 @@ select {
 .game-board {
     display: grid;
     gap: 5px;
-    width: min-content; /* Adjust width to content */
     margin: 0 auto;
     border: 5px solid var(--tile-bg);
     border-radius: 10px;
     padding: 5px;
+    max-width: calc(100% - 10px); /* Adjust based on padding */
 }
 
 .tile {
-    width: 80px;
-    height: 80px;
+    /* width and height will be determined by grid-template-columns and aspect-ratio */
+    aspect-ratio: 1 / 1; /* Keep tiles square */
     background-color: var(--tile-bg);
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2em;
+    font-size: 2em; /* Default font size */
     font-weight: 700;
     color: var(--tile-text);
     cursor: pointer;
@@ -154,12 +154,10 @@ select {
 
 @media (max-width: 500px) {
     .game-container {
-        padding: 15px;
+        padding: max(15px, 1vw);
     }
     .tile {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5em;
+        font-size: 1.5em; /* Adjusted font size for smaller screens */
     }
     #shuffle-btn, #pass-btn, select {
         padding: 8px 10px;
@@ -173,9 +171,7 @@ select {
 
 @media (max-width: 350px) {
     .tile {
-        width: 45px;
-        height: 45px;
-        font-size: 1.2em;
+        font-size: 1.2em; /* Further adjusted for very small screens */
     }
     .game-board {
         gap: 3px;

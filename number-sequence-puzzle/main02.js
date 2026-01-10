@@ -8,12 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageDisplay = document.getElementById('game-over-message');
     const resultText = document.getElementById('result-text');
 
-    // Game Settings
-    const levelSizes = [3, 4, 5]; // 3x3, 4x4, 5x5 boards
-    let currentLevelIndex = 0;
-    const finalCompletionURL = '../../index.html'; // Redirect to main hub after final level
+    // Game Settings (Hardcoded for Level 2: 5x8)
+    const boardRows = 5;
+    const boardCols = 8;
+    const nextLevelURL = 'numberpuzzle03.html'; // Redirect to next level
 
-    let boardSize;
     let tiles = [];
     let emptyTileIndex;
     let moves = 0;
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game Initialization ---
     function initGame() {
-        boardSize = levelSizes[currentLevelIndex];
         moves = 0;
         timeElapsed = 0;
         gameOver = false;
@@ -32,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDisplay();
         
         // Generate tiles in solved state
-        tiles = Array.from({ length: boardSize * boardSize - 1 }, (_, i) => i + 1);
+        tiles = Array.from({ length: (boardRows * boardCols) - 1 }, (_, i) => i + 1);
         tiles.push(0); // 0 represents the empty tile
         emptyTileIndex = tiles.indexOf(0);
 
@@ -43,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Core Game Logic ---
     function renderBoard() {
         gameBoard.innerHTML = '';
-        gameBoard.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+        gameBoard.style.gridTemplateColumns = `repeat(${boardCols}, 1fr)`;
 
         tiles.forEach((number, index) => {
             const tile = document.createElement('div');
@@ -84,7 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDisplay();
     }
 
-    // Checks if the puzzle is solvable (algorithm specific to N-puzzle)
+    // Checks if the puzzle is solvable (adapted for rectangular boards)
+    // For rectangular boards, solvability depends on grid width and empty tile's row parity.
     function isSolvable(currentTiles, currentEmptyIndex) {
         const tempTiles = currentTiles.filter(t => t !== 0); // Remove empty tile
         let inversions = 0;
@@ -96,20 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const rowOfEmpty = Math.floor(currentEmptyIndex / boardSize);
-        const parityOfBoardSize = boardSize % 2; // 0 for even, 1 for odd
+        const rowOfEmptyFromBottom = boardRows - 1 - Math.floor(currentEmptyIndex / boardCols);
 
-        if (parityOfBoardSize === 1) { // Odd board size (e.g., 3x3, 5x5)
+        if (boardCols % 2 === 1) { // Odd width board (e.g., 3x3, 3x5, 5x5)
             return inversions % 2 === 0;
-        } else { // Even board size (e.g., 4x4)
-            const parityOfEmptyRow = rowOfEmpty % 2; // 0 for even row, 1 for odd row (from bottom)
-            // For even boards, count rows from bottom. (boardSize - 1 - rowOfEmpty) % 2
-            const rowFromBottom = boardSize - 1 - rowOfEmpty;
-            if (rowFromBottom % 2 === 1) { // Empty tile on an odd row from bottom (1-indexed)
-                return inversions % 2 === 0;
-            } else { // Empty tile on an even row from bottom (1-indexed)
-                return inversions % 2 === 1;
-            }
+        } else { // Even width board (e.g., 4x4, 4x5, 5x8)
+            return (inversions % 2 === 0 && rowOfEmptyFromBottom % 2 === 1) ||
+                   (inversions % 2 === 1 && rowOfEmptyFromBottom % 2 === 0);
         }
     }
 
@@ -141,10 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function isAdjacent(index1, index2) {
-        const row1 = Math.floor(index1 / boardSize);
-        const col1 = index1 % boardSize;
-        const row2 = Math.floor(index2 / boardSize);
-        const col2 = index2 % boardSize;
+        const row1 = Math.floor(index1 / boardCols);
+        const col1 = index1 % boardCols;
+        const row2 = Math.floor(index2 / boardCols);
+        const col2 = index2 % boardCols;
 
         // Check if tiles are in the same row and adjacent columns OR same column and adjacent rows
         const sameRow = row1 === row2 && Math.abs(col1 - col2) === 1;
@@ -154,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkWinCondition() {
-        const solvedTiles = Array.from({ length: boardSize * boardSize - 1 }, (_, i) => i + 1);
+        const solvedTiles = Array.from({ length: (boardRows * boardCols) - 1 }, (_, i) => i + 1);
         solvedTiles.push(0); // Empty tile at the end
 
         if (tiles.every((tile, index) => tile === solvedTiles[index])) {
@@ -187,14 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultText.textContent = `Puzzle solved in ${moves} moves and ${timeElapsed} seconds!`;
 
             setTimeout(() => {
-                currentLevelIndex++;
-                if (currentLevelIndex < levelSizes.length) {
-                    alert(`Level ${currentLevelIndex + 1} (${levelSizes[currentLevelIndex]}x${levelSizes[currentLevelIndex]})!`);
-                    initGame(); // Start next level
-                } else {
-                    alert("You've mastered all levels! Redirecting to hub.");
-                    window.location.href = finalCompletionURL; // Redirect to main hub
-                }
+                window.location.href = nextLevelURL; // Redirect to next level
             }, 1000);
         }
     }
@@ -209,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     passBtn.addEventListener('click', () => {
         // Solve instantly (for test mode)
-        tiles = Array.from({ length: boardSize * boardSize - 1 }, (_, i) => i + 1);
+        tiles = Array.from({ length: (boardRows * boardCols) - 1 }, (_, i) => i + 1);
         tiles.push(0);
         emptyTileIndex = tiles.indexOf(0);
         renderBoard();
