@@ -6,7 +6,7 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 
 ## Design and Style
 
-*   **Layout:** A compact layout featuring game controls (restart) and game info (mine count, timer) above the main game board.
+*   **Layout:** A compact layout featuring game controls (restart) and game info (mine count, timer) above the main game board. The game board cells are responsive, adapting their size to fit the grid dimensions and screen size.
 *   **Theme:** A clean, functional, and minimal flat design.
 *   **Color Palette:**
     *   Background: Light gray (`#f0f2f5`).
@@ -45,7 +45,7 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 ## Development Plan
 
 1.  **[Completed]** **Structure (`index.html`):** Create the main HTML structure for the game board, controls, and info panel, removing the difficulty selector.
-1.  **[Completed]** **Styling (`style.css`):** Implement the full visual design, including the new simple/flat theme and cell styles.
+1.  **[Completed]** **Styling (`style.css`):** Implement the full visual design, including the new simple/flat theme, responsive cell styles, and adjusted media queries for smaller screens.
 3.  **[Completed]** **Core Logic (`main.js`):**
     *   Implement board generation and a progressive level system.
     *   Implement mine placement with first-click safety.

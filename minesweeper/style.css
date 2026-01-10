@@ -28,8 +28,8 @@ body {
     border-radius: 8px;
     border: 1px solid var(--border-color);
     padding: 20px;
-    width: max-content;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Keep a subtle shadow for depth */
+    max-width: min(500px, 90vw); /* Responsive max-width */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .game-header {
@@ -81,23 +81,24 @@ body {
     border-radius: 5px;
     padding: 2px;
     gap: 1px;
-    background-color: var(--border-color); /* To make gaps visible */
+    background-color: var(--border-color);
+    width: 100%; /* Make game board fill container */
+    max-width: 100%; /* Ensure it doesn't overflow its container */
 }
 
 .cell {
-    width: 30px;
-    height: 30px;
+    aspect-ratio: 1 / 1; /* Keep cells square */
     background-color: var(--cell-bg);
     border-radius: 3px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.1em;
+    font-size: 1.1em; /* Default font size */
     font-weight: 600;
     color: var(--text-color);
     cursor: pointer;
     transition: background-color 0.1s linear;
-    border: 1px solid rgba(0,0,0,0.1); /* Subtle border for definition */
+    border: 1px solid rgba(0,0,0,0.1);
 }
 
 .cell:hover {
@@ -144,8 +145,6 @@ body {
 
 @media (max-width: 300px) {
     .cell {
-        width: 25px;
-        height: 25px;
         font-size: 0.9em;
     }
     .game-container {
