@@ -38,7 +38,7 @@ body {
 }
 
 .game-header h1 {
-    font-size: 1.5em; /* Adjusted to be less prominent */
+    font-size: 1.2em; /* Further adjusted to prevent wrapping */
     color: var(--text-color);
     margin: 0 0 20px 0;
 }
@@ -151,7 +151,7 @@ body {
         padding: 10px;
     }
     .game-header h1 {
-        font-size: 1.2em; /* Adjusted to be less prominent */
+        font-size: 1.0em; /* Further adjusted to prevent wrapping */
     }
     .game-controls, .game-info {
         gap: 10px;
