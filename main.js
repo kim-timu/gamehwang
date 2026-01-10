@@ -243,8 +243,8 @@ function rotate(matrix, dir) {
 }
 
 let dropCounter = 0;
-
 let lastTime = 0;
+
 function update(time = 0) {
     const deltaTime = time - lastTime;
     lastTime = time;
@@ -280,40 +280,62 @@ document.addEventListener('keydown', event => {
 // Touch Controls
 let touchStartX = 0;
 let touchStartY = 0;
-let playerStartX = 0;
+let hasSwiped = false;
 
-document.addEventListener('touchstart', (event) => {
+document.addEventListener('touchstart', event => {
     touchStartX = event.touches[0].clientX;
     touchStartY = event.touches[0].clientY;
-    playerStartX = player.pos.x; // Remember player's X at the start of the touch
-}, { passive: true });
+    hasSwiped = false;
+});
 
-document.addEventListener('touchmove', (event) => {
-    const deltaX = event.touches[0].clientX - touchStartX;
-    const deltaY = event.touches[0].clientY - touchStartY;
+document.addEventListener('touchmove', event => {
+    event.preventDefault(); // Prevent screen scrolling
+    const touchCurrentX = event.touches[0].clientX;
+    const touchCurrentY = event.touches[0].clientY;
+
+    const deltaX = touchCurrentX - touchStartX;
+    const deltaY = touchCurrentY - touchStartY;
+
+    const moveThreshold = 20; // Pixels to move before triggering a block move
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal move
-        const newX = playerStartX + Math.round(deltaX / BLOCK_SIZE);
-        const originalX = player.pos.x;
-        player.pos.x = newX;
-
-        if (collide(arena, player)) {
-            player.pos.x = originalX;
+        // Horizontal movement
+        if (Math.abs(deltaX) > moveThreshold) {
+            hasSwiped = true;
+            if (deltaX > 0) {
+                playerMove(1);
+            } else {
+                playerMove(-1);
+            }
+            touchStartX = touchCurrentX; // Reset for next incremental move
         }
-    } else if (deltaY > BLOCK_SIZE) { // Check for downward swipe
-        playerDrop();
-        touchStartY = event.touches[0].clientY; // Reset Y start to avoid rapid-fire drops
+    } else {
+        // Vertical movement
+        if (deltaY > moveThreshold) {
+            hasSwiped = true;
+            playerDrop();
+            touchStartY = touchCurrentY; // Reset to prevent rapid drops
+        }
     }
-}, { passive: true });
+}, { passive: false }); // passive:false is needed for preventDefault
 
-document.addEventListener('touchend', (event) => {
-    const deltaX = event.changedTouches[0].clientX - touchStartX;
-    const deltaY = event.changedTouches[0].clientY - touchStartY;
+document.addEventListener('touchend', event => {
+    if (hasSwiped) {
+        return; // A swipe shouldn't also be a rotation
+    }
 
-    // If there was very little movement, consider it a tap for rotation
-    if (Math.abs(deltaX) < 20 && Math.abs(deltaY) < 20) {
-        playerRotate(1);
+    // Check for tap or upward swipe for rotation
+    const touchEndX = event.changedTouches[0].clientX;
+    const touchEndY = event.changedTouches[0].clientY;
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const tapThreshold = 20;
+    const swipeUpThreshold = -40;
+
+    if (deltaY < swipeUpThreshold && Math.abs(deltaX) < 50) {
+        playerRotate(1); // Upward swipe
+    } else if (Math.abs(deltaX) < tapThreshold && Math.abs(deltaY) < tapThreshold) {
+        playerRotate(1); // Tap
     }
 });
 
