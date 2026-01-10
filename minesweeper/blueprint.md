@@ -7,12 +7,14 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 ## Design and Style
 
 *   **Layout:** A compact layout featuring game controls (restart) and game info (mine count, timer) above the main game board.
-*   **Theme:** A "Neumorphic" design, using soft shadows to create a plastic, extruded look.
+*   **Theme:** A clean, functional, and minimal flat design.
 *   **Color Palette:**
-    *   Background: A light gray (`#f0f2f5`).
-    *   Cells: A slightly darker gray (`#e0e5ec`) with inset and outset shadows to show depth.
-    *   Mines: Red (`#d32f2f`).
-    *   Flags: Orange (`#f57c00`).
+    *   Background: Light gray (`#f0f2f5`).
+    *   Cells: Off-white (`#e9ecef`) and white (`#fff`) for revealed cells.
+    *   Borders: Light gray (`#ccc`).
+    *   Mines: Red (`#dc3545`).
+    *   Flags: Orange (`#ffc107`).
+    *   Primary Button: Blue (`#007bff`).
 *   **Typography:** Clean, sans-serif font (Poppins).
 
 ## Global Features
@@ -43,7 +45,7 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 ## Development Plan
 
 1.  **[Completed]** **Structure (`index.html`):** Create the main HTML structure for the game board, controls, and info panel, removing the difficulty selector.
-2.  **[Completed]** **Styling (`style.css`):** Implement the full visual design, including the neumorphic theme and cell styles.
+1.  **[Completed]** **Styling (`style.css`):** Implement the full visual design, including the new simple/flat theme and cell styles.
 3.  **[Completed]** **Core Logic (`main.js`):**
     *   Implement board generation and a progressive level system.
     *   Implement mine placement with first-click safety.
