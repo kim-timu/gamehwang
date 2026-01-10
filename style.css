@@ -1,1 +1,43 @@
-/* Add styles here */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #111;
+    color: #eee;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+canvas {
+    border: 1px solid #eee;
+    box-shadow: 0 0 10px #eee;
+}
+
+.info {
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
+#restart {
+    background-color: #444;
+    color: #eee;
+    border: 1px solid #eee;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #eee;
+}
+
+#restart:hover {
+    background-color: #555;
+}
