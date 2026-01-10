@@ -6,7 +6,6 @@ const gameOverElement = document.getElementById('game-over');
 const restartButton = document.getElementById('restart');
 const nextCanvas = document.getElementById('next');
 const nextContext = nextCanvas.getContext('2d');
-const rotateButton = document.getElementById('rotate-btn');
 
 const COLS = 10;
 const ROWS = 20;
@@ -202,8 +201,6 @@ function playerReset() {
         player.speed = 1000;
         updateScore();
         gameOverElement.classList.remove('hidden');
-    } else {
-        gameOverElement.classList.add('hidden');
     }
 }
 
@@ -264,7 +261,6 @@ function updateScore() {
     levelElement.innerText = player.level;
 }
 
-// Keyboard Controls
 document.addEventListener('keydown', event => {
     if (event.keyCode === 37) { // Left Arrow
         playerMove(-1);
@@ -275,74 +271,6 @@ document.addEventListener('keydown', event => {
     } else if (event.keyCode === 38) { // Up Arrow
         playerRotate(1);
     }
-});
-
-// Touch Controls
-let touchStartX = 0;
-let touchStartY = 0;
-let hasSwiped = false;
-
-document.addEventListener('touchstart', event => {
-    touchStartX = event.touches[0].clientX;
-    touchStartY = event.touches[0].clientY;
-    hasSwiped = false;
-});
-
-document.addEventListener('touchmove', event => {
-    event.preventDefault(); // Prevent screen scrolling
-    const touchCurrentX = event.touches[0].clientX;
-    const touchCurrentY = event.touches[0].clientY;
-
-    const deltaX = touchCurrentX - touchStartX;
-    const deltaY = touchCurrentY - touchStartY;
-
-    const moveThreshold = 20; // Pixels to move before triggering a block move
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal movement
-        if (Math.abs(deltaX) > moveThreshold) {
-            hasSwiped = true;
-            if (deltaX > 0) {
-                playerMove(1);
-            } else {
-                playerMove(-1);
-            }
-            touchStartX = touchCurrentX; // Reset for next incremental move
-        }
-    } else {
-        // Vertical movement
-        if (deltaY > moveThreshold) {
-            hasSwiped = true;
-            playerDrop();
-            touchStartY = touchCurrentY; // Reset to prevent rapid drops
-        }
-    }
-}, { passive: false }); // passive:false is needed for preventDefault
-
-document.addEventListener('touchend', event => {
-    if (hasSwiped) {
-        return; // A swipe shouldn't also be a rotation
-    }
-
-    // Check for tap or upward swipe for rotation
-    const touchEndX = event.changedTouches[0].clientX;
-    const touchEndY = event.changedTouches[0].clientY;
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-    const tapThreshold = 20;
-    const swipeUpThreshold = -40;
-
-    if (deltaY < swipeUpThreshold && Math.abs(deltaX) < 50) {
-        playerRotate(1); // Upward swipe
-    } else if (Math.abs(deltaX) < tapThreshold && Math.abs(deltaY) < tapThreshold) {
-        playerRotate(1); // Tap
-    }
-});
-
-
-// Button Controls
-rotateButton.addEventListener('click', () => {
-    playerRotate(1);
 });
 
 restartButton.addEventListener('click', () => {
@@ -356,7 +284,6 @@ restartButton.addEventListener('click', () => {
     update();
 });
 
-// Initialize Game
 playerReset();
 updateScore();
 update();
