@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
-    const difficultySelector = document.getElementById('difficulty');
     const shuffleBtn = document.getElementById('shuffle-btn');
     const passBtn = document.getElementById('pass-btn');
     const gameBoard = document.getElementById('game-board');
@@ -9,8 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageDisplay = document.getElementById('game-over-message');
     const resultText = document.getElementById('result-text');
 
-    // Game State
-    let boardSize = 4; // Default to 4x4
+    // Game Settings
+    const levelSizes = [3, 4, 5]; // 3x3, 4x4, 5x5 boards
+    let currentLevelIndex = 0;
+    const finalCompletionURL = '../../index.html'; // Redirect to main hub after final level
+
+    let boardSize;
     let tiles = [];
     let emptyTileIndex;
     let moves = 0;
@@ -22,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game Initialization ---
     function initGame() {
-        boardSize = parseInt(difficultySelector.value);
+        boardSize = levelSizes[currentLevelIndex];
         moves = 0;
         timeElapsed = 0;
         gameOver = false;
@@ -184,12 +187,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isWin) {
             messageDisplay.classList.remove('hidden');
             resultText.textContent = `Puzzle solved in ${moves} moves and ${timeElapsed} seconds!`;
+
+            setTimeout(() => {
+                currentLevelIndex++;
+                if (currentLevelIndex < levelSizes.length) {
+                    alert(`Level ${currentLevelIndex + 1} (${levelSizes[currentLevelIndex]}x${levelSizes[currentLevelIndex]})!`);
+                    initGame(); // Start next level
+                } else {
+                    alert("You've mastered all levels! Redirecting to hub.");
+                    window.location.href = finalCompletionURL; // Redirect to main hub
+                }
+            }, 1000);
         }
     }
 
     // --- Event Listeners ---
-    difficultySelector.addEventListener('change', initGame);
-    shuffleBtn.addEventListener('click', shuffleTiles);
+    shuffleBtn.addEventListener('click', initGame); // Shuffle button now re-initializes current level
 
     // Test Mode Integration
     const TEST_MODE_KEY = 'acdgames_test_mode';
@@ -204,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         emptyTileIndex = tiles.indexOf(0);
         renderBoard();
         moves = 0; // Reset moves for solved state
-        endGame(true); // Trigger win condition
+        endGame(true); // Trigger win condition and advance level
     });
 
     // Initial game start
