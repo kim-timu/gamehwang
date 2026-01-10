@@ -21,8 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let timeElapsed = 0;
     let gameOver = false;
 
-    const TEST_MODE_KEY = 'acdgames_test_mode';
-
     // --- Game Initialization ---
     function initGame() {
         boardSize = levelSizes[currentLevelIndex];
@@ -205,8 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     shuffleBtn.addEventListener('click', initGame); // Shuffle button now re-initializes current level
 
     // Test Mode Integration
-    const TEST_MODE_KEY = 'acdgames_test_mode';
-    if (localStorage.getItem(TEST_MODE_KEY) === 'true') {
+    if (localStorage.getItem('acdgames_test_mode') === 'true') {
         passBtn.style.display = 'inline-block';
     }
 
