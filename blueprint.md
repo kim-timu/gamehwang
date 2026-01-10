@@ -17,7 +17,10 @@ This project is a web-based retro game arcade. It provides a central lobby where
 - **Game Lobby:** A responsive grid layout showcasing 10 classic retro games.
 - **Game Cards:** Each game is represented by a card with an image and a title. The cards have a hover effect for better user experience.
 - **Tetris Game:** A fully implemented, retro-style Tetris game.
-- **Mobile Controls:** On-screen controls for mobile devices, allowing users to play Tetris without a physical keyboard.
+- **Touch Controls:** Intuitive touch gestures for mobile devices, allowing users to play Tetris with swipes and taps:
+    - **Tap:** Rotate the block.
+    - **Swipe Left/Right:** Move the block horizontally.
+    - **Swipe Down:** Drop the block quickly.
 - **Screen Lock:** The game screen is locked to prevent scrolling during gameplay, ensuring an immersive experience.
 - **Placeholder Pages:** A "Coming Soon" page for games that are under development.
 

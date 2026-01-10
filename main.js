@@ -7,12 +7,6 @@ const restartButton = document.getElementById('restart');
 const nextCanvas = document.getElementById('next');
 const nextContext = nextCanvas.getContext('2d');
 
-const leftBtn = document.getElementById('left-btn');
-const rightBtn = document.getElementById('right-btn');
-const rotateBtn = document.getElementById('rotate-btn');
-const downBtn = document.getElementById('down-btn');
-
-
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 24;
@@ -275,11 +269,6 @@ document.addEventListener('keydown', event => {
     }
 });
 
-leftBtn.addEventListener('click', () => playerMove(-1));
-rightBtn.addEventListener('click', () => playerMove(1));
-rotateBtn.addEventListener('click', () => playerRotate(1));
-downBtn.addEventListener('click', () => playerDrop());
-
 restartButton.addEventListener('click', () => {
     arena.forEach(row => row.fill(0));
     player.score = 0;
@@ -291,6 +280,43 @@ restartButton.addEventListener('click', () => {
     gameOverElement.classList.add('hidden');
     update();
 });
+
+let touchstartX = 0;
+let touchstartY = 0;
+let touchendX = 0;
+let touchendY = 0;
+
+canvas.addEventListener('touchstart', function(event) {
+    touchstartX = event.changedTouches[0].screenX;
+    touchstartY = event.changedTouches[0].screenY;
+}, false);
+
+canvas.addEventListener('touchend', function(event) {
+    touchendX = event.changedTouches[0].screenX;
+    touchendY = event.changedTouches[0].screenY;
+    handleGesture();
+}, false); 
+
+function handleGesture() {
+    const dx = touchendX - touchstartX;
+    const dy = touchendY - touchstartY;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+
+    if (absDx > absDy) { // Horizontal swipe
+        if (dx > 0) {
+            playerMove(1);
+        } else {
+            playerMove(-1);
+        }
+    } else { // Vertical swipe or tap
+        if (dy > 0) {
+            playerDrop();
+        } else {
+            playerRotate(1);
+        }
+    }
+}
 
 document.body.classList.add('game-active');
 playerReset();
