@@ -264,6 +264,7 @@ function updateScore() {
     levelElement.innerText = player.level;
 }
 
+// Keyboard Controls
 document.addEventListener('keydown', event => {
     if (event.keyCode === 37) { // Left Arrow
         playerMove(-1);
@@ -276,65 +277,48 @@ document.addEventListener('keydown', event => {
     }
 });
 
+// Touch Controls
 let touchStartX = 0;
 let touchStartY = 0;
-let hasSwiped = false; // Flag to distinguish swipe from tap
+let playerStartX = 0;
 
-document.addEventListener('touchstart', event => {
+document.addEventListener('touchstart', (event) => {
     touchStartX = event.touches[0].clientX;
     touchStartY = event.touches[0].clientY;
-    hasSwiped = false; // Reset on a new touch
-});
+    playerStartX = player.pos.x; // Remember player's X at the start of the touch
+}, { passive: true });
 
-document.addEventListener('touchmove', event => {
-    const touchCurrentX = event.touches[0].clientX;
-    const touchCurrentY = event.touches[0].clientY;
-
-    const deltaX = touchCurrentX - touchStartX;
-    const deltaY = touchCurrentY - touchStartY;
-
-    const moveThreshold = 20; // Lowered threshold for more responsive movement
+document.addEventListener('touchmove', (event) => {
+    const deltaX = event.touches[0].clientX - touchStartX;
+    const deltaY = event.touches[0].clientY - touchStartY;
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal movement
-        if (Math.abs(deltaX) > moveThreshold) {
-            hasSwiped = true;
-            if (deltaX > 0) {
-                playerMove(1);
-            } else {
-                playerMove(-1);
-            }
-            touchStartX = touchCurrentX;
+        // Horizontal move
+        const newX = playerStartX + Math.round(deltaX / BLOCK_SIZE);
+        const originalX = player.pos.x;
+        player.pos.x = newX;
+
+        if (collide(arena, player)) {
+            player.pos.x = originalX;
         }
-    } else {
-        // Vertical movement (downward swipe)
-        if (deltaY > moveThreshold) {
-            hasSwiped = true;
-            playerDrop();
-        }
+    } else if (deltaY > BLOCK_SIZE) { // Check for downward swipe
+        playerDrop();
+        touchStartY = event.touches[0].clientY; // Reset Y start to avoid rapid-fire drops
+    }
+}, { passive: true });
+
+document.addEventListener('touchend', (event) => {
+    const deltaX = event.changedTouches[0].clientX - touchStartX;
+    const deltaY = event.changedTouches[0].clientY - touchStartY;
+
+    // If there was very little movement, consider it a tap for rotation
+    if (Math.abs(deltaX) < 20 && Math.abs(deltaY) < 20) {
+        playerRotate(1);
     }
 });
 
-document.addEventListener('touchend', event => {
-    if (hasSwiped) {
-        return; // Don't process rotation if a swipe occurred
-    }
 
-    const touchEndX = event.changedTouches[0].clientX;
-    const touchEndY = event.changedTouches[0].clientY;
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-
-    const tapThreshold = 15;
-    const swipeUpThreshold = -50;
-
-    if (deltaY < swipeUpThreshold && Math.abs(deltaX) < 50) {
-        playerRotate(1); // Upward swipe
-    } else if (Math.abs(deltaX) < tapThreshold && Math.abs(deltaY) < tapThreshold) {
-        playerRotate(1); // Tap
-    }
-});
-
+// Button Controls
 rotateButton.addEventListener('click', () => {
     playerRotate(1);
 });
@@ -350,6 +334,7 @@ restartButton.addEventListener('click', () => {
     update();
 });
 
+// Initialize Game
 playerReset();
 updateScore();
 update();
