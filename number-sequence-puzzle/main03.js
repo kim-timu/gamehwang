@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageDisplay = document.getElementById('game-over-message');
     const resultText = document.getElementById('result-text');
 
-    // Game Settings (Hardcoded for Level 3: 6x10)
-    const boardRows = 6;
-    const boardCols = 10;
+    // Game Settings (Hardcoded for Level 3: 10x6)
+    const boardRows = 10;
+    const boardCols = 6;
     const nextLevelURL = '../../index.html'; // Redirect to main hub after final level
 
     let tiles = [];

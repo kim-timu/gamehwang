@@ -19,10 +19,10 @@ A classic sliding puzzle game where the player arranges numbered tiles in sequen
 ## Features
 
 *   **Progressive Levels:** The game is structured into distinct HTML and JavaScript files for each level, ensuring clear progression.
-*   **Board Sizes:**
-    *   **Level 1 (4x5, 19 tiles):** `numberpuzzle01.html`
-    *   **Level 2 (5x8, 39 tiles):** `numberpuzzle02.html`
-    *   **Level 3 (6x10, 59 tiles):** `numberpuzzle03.html`
+*   **Board Sizes (Vertically Long Rectangular):**
+    *   **Level 1 (5x4, 19 tiles):** `numberpuzzle01.html`
+    *   **Level 2 (8x5, 39 tiles):** `numberpuzzle02.html`
+    *   **Level 3 (10x6, 59 tiles):** `numberpuzzle03.html`
 *   **Tile Movement:** Players click a tile adjacent to the empty space to move it into the empty spot.
 *   **Shuffling:** A "Shuffle" button to randomize the tiles, ensuring the generated puzzle is always solvable.
 *   **Win Condition:** The game is won when all tiles are arranged in ascending numerical order, with the empty tile in the last position. A confirmation message is displayed, and the player is redirected to the next level's HTML file. After the final level (Level 3), the player is redirected to the main game hub.
@@ -44,12 +44,12 @@ A classic sliding puzzle game where the player arranges numbered tiles in sequen
 
 ## Refactoring for File-per-Level Structure
 
-1.  **[Completed]** **Level 1 (4x5, 19 tiles) (`numberpuzzle01.html`, `main01.js`):**
-    *   Hardcoded `boardRows = 4`, `boardCols = 5`.
+1.  **[Completed]** **Level 1 (5x4, 19 tiles) (`numberpuzzle01.html`, `main01.js`):**
+    *   Hardcoded `boardRows = 5`, `boardCols = 4`.
     *   Win condition redirects to `numberpuzzle02.html`.
-2.  **[Completed]** **Level 2 (5x8, 39 tiles) (`numberpuzzle02.html`, `main02.js`):**
-    *   Hardcoded `boardRows = 5`, `boardCols = 8`.
+2.  **[Completed]** **Level 2 (8x5, 39 tiles) (`numberpuzzle02.html`, `main02.js`):**
+    *   Hardcoded `boardRows = 8`, `boardCols = 5`.
     *   Win condition redirects to `numberpuzzle03.html`.
-3.  **[Completed]** **Level 3 (6x10, 59 tiles) (`numberpuzzle03.html`, `main03.js`):**
-    *   Hardcoded `boardRows = 6`, `boardCols = 10`.
+3.  **[Completed]** **Level 3 (10x6, 59 tiles) (`numberpuzzle03.html`, `main03.js`):**
+    *   Hardcoded `boardRows = 10`, `boardCols = 6`.
     *   Win condition redirects to the main game hub (`../../index.html`).

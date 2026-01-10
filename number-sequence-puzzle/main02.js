@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageDisplay = document.getElementById('game-over-message');
     const resultText = document.getElementById('result-text');
 
-    // Game Settings (Hardcoded for Level 2: 5x8)
-    const boardRows = 5;
-    const boardCols = 8;
+    // Game Settings (Hardcoded for Level 2: 8x5)
+    const boardRows = 8;
+    const boardCols = 5;
     const nextLevelURL = 'numberpuzzle03.html'; // Redirect to next level
 
     let tiles = [];
