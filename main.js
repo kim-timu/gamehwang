@@ -6,6 +6,7 @@ const gameOverElement = document.getElementById('game-over');
 const restartButton = document.getElementById('restart');
 const nextCanvas = document.getElementById('next');
 const nextContext = nextCanvas.getContext('2d');
+const rotateButton = document.getElementById('rotate-btn');
 
 const COLS = 10;
 const ROWS = 20;
@@ -264,54 +265,19 @@ function updateScore() {
 }
 
 document.addEventListener('keydown', event => {
-    if (event.keyCode === 37) {
+    if (event.keyCode === 37) { // Left Arrow
         playerMove(-1);
-    } else if (event.keyCode === 39) {
+    } else if (event.keyCode === 39) { // Right Arrow
         playerMove(1);
-    } else if (event.keyCode === 40) {
+    } else if (event.keyCode === 40) { // Down Arrow
         playerDrop();
-    } else if (event.keyCode === 81) {
-        playerRotate(-1);
-    } else if (event.keyCode === 87) {
+    } else if (event.keyCode === 38) { // Up Arrow
         playerRotate(1);
     }
 });
 
-let touchStartX = 0;
-let touchStartY = 0;
-
-document.addEventListener('touchstart', event => {
-    touchStartX = event.touches[0].clientX;
-    touchStartY = event.touches[0].clientY;
-});
-
-document.addEventListener('touchmove', event => {
-    const touchEndX = event.touches[0].clientX;
-    const touchEndY = event.touches[0].clientY;
-
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX > 0) {
-            playerMove(1);
-        } else {
-            playerMove(-1);
-        }
-    } else {
-        if (deltaY > 0) {
-            playerDrop();
-        }
-    }
-
-    touchStartX = touchEndX;
-    touchStartY = touchEndY;
-});
-
-document.addEventListener('touchend', event => {
-    if (event.changedTouches[0].clientY < touchStartY - 50) {
-        playerRotate(1);
-    }
+rotateButton.addEventListener('click', () => {
+    playerRotate(1);
 });
 
 restartButton.addEventListener('click', () => {
