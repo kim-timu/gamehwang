@@ -142,3 +142,21 @@ body {
 .hidden {
     display: none;
 }
+
+@media (max-width: 300px) {
+    .cell {
+        width: 25px;
+        height: 25px;
+        font-size: 0.9em;
+    }
+    .game-container {
+        padding: 10px;
+    }
+    .game-header h1 {
+        font-size: 1.5em;
+    }
+    .game-controls, .game-info {
+        gap: 10px;
+        padding: 5px;
+    }
+}

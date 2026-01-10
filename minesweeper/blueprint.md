@@ -25,7 +25,9 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 
 ## Features
 
-*   **Level 1 (Easy - 9x9, 10 mines):** `minesweeper01.html` (currently the only available level)
+*   **Level 1 (Very Easy - 5x5, 3 mines):** `minesweeper01.html`
+*   **Level 2 (Simple - 7x7, 6 mines):** `minesweeper02.html`
+*   **Level 3 (Easy - 9x9, 10 mines):** `minesweeper03.html`
 *   **Game Board:** A static grid for each level, defined in its respective HTML and JavaScript file.
 *   **Gameplay:**
     *   **Left-click:** Reveals a cell. If the cell is a mine, the game is over. If the cell is empty (0 adjacent mines), it recursively reveals all neighboring empty cells.
@@ -35,7 +37,7 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 *   **Mine Counter:** Displays the total number of mines minus the number of flags placed.
 *   **Win/Loss Condition:**
     *   **Loss:** The player loses if they click on a mine. All mines are revealed.
-    *   **Win:** The player wins by revealing all non-mine cells. A confirmation message is displayed, and the player is redirected to the main game hub. Alternatively, if "Test Mode" is active, the level can be passed instantly using the "Pass" button.
+    *   **Win:** The player wins by revealing all non-mine cells. A confirmation message is displayed, and the player is redirected to the next level's HTML file. After the final level (Level 3), the player is redirected to the main game hub. Alternatively, if "Test Mode" is active, the level can be passed instantly using the "Pass" button.
 *   **Restart Game:** A "New Game" button on each level allows the player to restart the current level.
 
 ## Development Plan
@@ -55,6 +57,12 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 
 ## Refactoring for File-per-Level Structure
 
-1.  **[Completed]** **Level 1 (Easy) (`minesweeper01.html`, `main01.js`):**
-    *   Hardcoded difficulty to 'easy'.
+1.  **[Completed]** **Level 1 (Very Easy) (`minesweeper01.html`, `main01.js`):**
+    *   Hardcoded difficulty to 'Very Easy' (5x5, 3 mines).
+    *   Win condition redirects to `minesweeper02.html`.
+2.  **[Completed]** **Level 2 (Simple) (`minesweeper02.html`, `main02.js`):**
+    *   Hardcoded difficulty to 'Simple' (7x7, 6 mines).
+    *   Win condition redirects to `minesweeper03.html`.
+3.  **[Completed]** **Level 3 (Easy) (`minesweeper03.html`, `main03.js`):**
+    *   Hardcoded difficulty to 'Easy' (9x9, 10 mines).
     *   Win condition redirects to the main game hub (`../../index.html`).

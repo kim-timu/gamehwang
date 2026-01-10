@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageEl = document.getElementById('game-over-message');
     const resultTextEl = document.getElementById('result-text');
 
-    // Game Settings (Hardcoded for Very Easy level)
-    const currentDifficulty = { name: 'Very Easy', rows: 5, cols: 5, mines: 3 };
-    const nextLevelURL = 'minesweeper02.html'; // Redirect to next level
+    // Game Settings (Hardcoded for Easy level)
+    const currentDifficulty = { name: 'Easy', rows: 9, cols: 9, mines: 10 };
+    const nextLevelURL = '../../index.html'; // Redirect to main hub after final level
 
     let board = [];
     let gameOver = false;
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timer);
         
         if (isWin) {
-            resultTextEl.textContent = `You cleared ${currentDifficulty.name} level in ${timeElapsed}s!`;
+            resultTextEl.textContent = `You cleared Easy level in ${timeElapsed}s! You've mastered all current Minesweeper levels!`;
             messageEl.classList.remove('hidden');
 
             setTimeout(() => {

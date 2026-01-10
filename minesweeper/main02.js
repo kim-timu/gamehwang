@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageEl = document.getElementById('game-over-message');
     const resultTextEl = document.getElementById('result-text');
 
-    // Game Settings (Hardcoded for Very Easy level)
-    const currentDifficulty = { name: 'Very Easy', rows: 5, cols: 5, mines: 3 };
-    const nextLevelURL = 'minesweeper02.html'; // Redirect to next level
+    // Game Settings (Hardcoded for Simple level)
+    const currentDifficulty = { name: 'Simple', rows: 7, cols: 7, mines: 6 };
+    const nextLevelURL = 'minesweeper03.html'; // Redirect to next level
 
     let board = [];
     let gameOver = false;
