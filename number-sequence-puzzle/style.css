@@ -42,7 +42,7 @@ body {
 }
 
 .game-header h1 {
-    font-size: 2em;
+    font-size: 1.5em; /* Adjusted to be less prominent */
     color: var(--text-color);
     margin: 0 0 15px 0;
     font-weight: 600;
@@ -149,12 +149,15 @@ select {
 }
 #game-over-message h2 {
     margin-top: 0;
-    font-size: 1.8em;
+    font-size: 1.5em; /* Adjusted to be less prominent */
 }
 
 @media (max-width: 500px) {
     .game-container {
         padding: max(15px, 1vw);
+    }
+    .game-header h1 {
+        font-size: 1.2em; /* Further adjusted for smaller screens */
     }
     .tile {
         font-size: 1.5em; /* Adjusted font size for smaller screens */
