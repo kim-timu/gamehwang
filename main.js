@@ -276,6 +276,65 @@ document.addEventListener('keydown', event => {
     }
 });
 
+let touchStartX = 0;
+let touchStartY = 0;
+let hasSwiped = false; // Flag to distinguish swipe from tap
+
+document.addEventListener('touchstart', event => {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+    hasSwiped = false; // Reset on a new touch
+});
+
+document.addEventListener('touchmove', event => {
+    const touchCurrentX = event.touches[0].clientX;
+    const touchCurrentY = event.touches[0].clientY;
+
+    const deltaX = touchCurrentX - touchStartX;
+    const deltaY = touchCurrentY - touchStartY;
+
+    const moveThreshold = 20; // Lowered threshold for more responsive movement
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal movement
+        if (Math.abs(deltaX) > moveThreshold) {
+            hasSwiped = true;
+            if (deltaX > 0) {
+                playerMove(1);
+            } else {
+                playerMove(-1);
+            }
+            touchStartX = touchCurrentX;
+        }
+    } else {
+        // Vertical movement (downward swipe)
+        if (deltaY > moveThreshold) {
+            hasSwiped = true;
+            playerDrop();
+        }
+    }
+});
+
+document.addEventListener('touchend', event => {
+    if (hasSwiped) {
+        return; // Don't process rotation if a swipe occurred
+    }
+
+    const touchEndX = event.changedTouches[0].clientX;
+    const touchEndY = event.changedTouches[0].clientY;
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    const tapThreshold = 15;
+    const swipeUpThreshold = -50;
+
+    if (deltaY < swipeUpThreshold && Math.abs(deltaX) < 50) {
+        playerRotate(1); // Upward swipe
+    } else if (Math.abs(deltaX) < tapThreshold && Math.abs(deltaY) < tapThreshold) {
+        playerRotate(1); // Tap
+    }
+});
+
 rotateButton.addEventListener('click', () => {
     playerRotate(1);
 });
