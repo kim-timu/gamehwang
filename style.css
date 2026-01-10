@@ -5,6 +5,10 @@ body {
     text-align: center;
 }
 
+.game-active {
+    overflow: hidden;
+}
+
 h1 {
     font-size: 3rem;
     text-shadow: 2px 2px 4px #000;
@@ -41,4 +45,37 @@ canvas {
     border-radius: 4px;
     box-shadow: 0 0 10px #FF0D72;
     margin-top: 10px;
+}
+
+.back-link {
+    display: block;
+    margin-top: 20px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.mobile-controls {
+    display: none;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .mobile-controls button {
+        background-color: #FF0D72;
+        color: #fff;
+        border: none;
+        padding: 15px;
+        font-size: 1.5rem;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        box-shadow: 0 0 10px #FF0D72;
+    }
 }
