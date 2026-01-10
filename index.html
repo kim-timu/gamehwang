@@ -3,20 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Matching Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ACD Games Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .hub-container {
+            background: #ffffff;
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .game-link {
+            display: block;
+            padding: 20px 40px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+        .game-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4);
+        }
+        .game-link.minesweeper {
+            background: #28a745;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        .game-link.minesweeper:hover {
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4);
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <header class="game-header">
-            <h1>Image Matching Game</h1>
-            <div class="game-info">
-                <span class="moves-container">Moves: <span id="moves-count">0</span></span>
-                <button id="restart-btn">Restart</button>
-            </div>
-        </header>
-        <div id="game-board" class="game-board"></div>
+    <div class="hub-container">
+        <h1>Select a Game</h1>
+        <div class="game-list">
+            <a href="matching-game/index.html" class="game-link">Image Matching Game</a>
+            <a href="minesweeper/index.html" class="game-link minesweeper">Minesweeper</a>
+        </div>
     </div>
-    <script src="main.js"></script>
 </body>
 </html>

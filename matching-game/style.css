@@ -133,6 +133,28 @@ body {
     outline: 2px solid var(--primary-color);
 }
 
+/* Grid-specific adjustments */
+.game-board.grid-6 {
+    gap: 10px;
+}
+.game-board.grid-6 .card-face {
+    font-size: 2em;
+}
+
+.game-board.grid-8 {
+    gap: 8px;
+}
+.game-container.grid-8-container {
+    max-width: 700px; /* Allow slightly larger container for 8x8 */
+}
+.game-board.grid-8 .card-face {
+    font-size: 1.5em;
+}
+.game-board.grid-8 .card-back {
+    font-size: 1.5em;
+}
+
+
 @media (max-width: 640px) {
     .game-header h1 {
         font-size: 1.4em;

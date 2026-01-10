@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const gameContainer = document.querySelector('.game-container');
     const gameBoard = document.getElementById('game-board');
     const movesCountSpan = document.getElementById('moves-count');
     const restartBtn = document.getElementById('restart-btn');
@@ -7,10 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const allEmojis = [
         '😊', '😂', '😍', '🤔', '😎', '😡', '😭', '🤯',
         '👍', '👎', '❤️', '🔥', '⭐', '🚀', '💯', '🎉',
-        '🐶', '🐱'
+        '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼',
+        '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦄'
     ];
     
-    const gridLevels = [4, 6]; // Defines grid dimensions for levels: 4x4, 6x6
+    const gridLevels = [4, 6, 8]; // Defines grid dimensions for levels: 4x4, 6x6, 8x8
     let currentLevelIndex = 0;
 
     let cards = [];
@@ -29,6 +31,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBoard() {
         const dimension = gridLevels[currentLevelIndex];
         gameBoard.innerHTML = '';
+        
+        // Remove old grid classes and add the new one
+        gameBoard.className = 'game-board'; // Reset classes
+        gameBoard.classList.add(`grid-${dimension}`);
+
+        if (dimension === 8) {
+            gameContainer.classList.add('grid-8-container');
+        } else {
+            gameContainer.classList.remove('grid-8-container');
+        }
+
         gameBoard.style.gridTemplateColumns = `repeat(${dimension}, 1fr)`;
         
         moves = 0;
