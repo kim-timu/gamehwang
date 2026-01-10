@@ -1,171 +1,109 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
-    const difficultySelector = document.getElementById('difficulty');
     const restartBtn = document.getElementById('restart-btn');
     const gameBoard = document.getElementById('game-board');
     const minesCountSpan = document.getElementById('mines-count');
     const timerSpan = document.getElementById('timer');
+    const messageEl = document.getElementById('game-over-message');
+    const resultTextEl = document.getElementById('result-text');
 
     // Game Settings
     const difficulties = {
-        easy: { rows: 9, cols: 9, mines: 10 },
-        medium: { rows: 16, cols: 16, mines: 40 },
-        hard: { rows: 16, cols: 30, mines: 99 }
+        easy: { name: 'Easy', rows: 9, cols: 9, mines: 10 },
+        medium: { name: 'Medium', rows: 16, cols: 16, mines: 40 },
+        hard: { name: 'Hard', rows: 16, cols: 30, mines: 99 }
     };
+    const levelOrder = ['easy', 'medium', 'hard'];
+    let currentLevelIndex = 0;
 
-    let currentDifficulty = difficulties.medium;
     let board = [];
     let gameOver = false;
+    let firstClick = true;
     let flags = 0;
     let timer;
     let timeElapsed = 0;
 
     // --- Game Setup ---
     function startGame() {
-        currentDifficulty = difficulties[difficultySelector.value];
+        const levelKey = levelOrder[currentLevelIndex];
+        const currentDifficulty = difficulties[levelKey];
+
         gameOver = false;
+        firstClick = true;
         flags = 0;
         timeElapsed = 0;
         clearInterval(timer);
         timerSpan.textContent = timeElapsed;
 
         minesCountSpan.textContent = currentDifficulty.mines;
-        document.getElementById('game-over-message').classList.add('hidden');
+        messageEl.classList.add('hidden');
 
-        createBoard();
-        addEventListeners();
+        createBoard(currentDifficulty);
     }
 
-    function createBoard() {
+    function createBoard(difficulty) {
         board = [];
         gameBoard.innerHTML = '';
-        gameBoard.style.gridTemplateColumns = `repeat(${currentDifficulty.cols}, 1fr)`;
+        gameBoard.style.gridTemplateColumns = `repeat(${difficulty.cols}, 1fr)`;
 
-        // 1. Initialize empty board
-        for (let r = 0; r < currentDifficulty.rows; r++) {
+        for (let r = 0; r < difficulty.rows; r++) {
             const row = [];
-            for (let c = 0; c < currentDifficulty.cols; c++) {
-                row.push({
-                    isMine: false,
-                    isRevealed: false,
-                    isFlagged: false,
-                    adjacentMines: 0
-                });
-            }
-            board.push(row);
-        }
-
-        // 2. Place mines randomly
-        let minesPlaced = 0;
-        while (minesPlaced < currentDifficulty.mines) {
-            const r = Math.floor(Math.random() * currentDifficulty.rows);
-            const c = Math.floor(Math.random() * currentDifficulty.cols);
-            if (!board[r][c].isMine) {
-                board[r][c].isMine = true;
-                minesPlaced++;
-            }
-        }
-
-        // 3. Calculate adjacent mines
-        for (let r = 0; r < currentDifficulty.rows; r++) {
-            for (let c = 0; c < currentDifficulty.cols; c++) {
-                if (!board[r][c].isMine) {
-                    let count = 0;
-                    // Check all 8 neighbors
-                    for (let i = -1; i <= 1; i++) {
-                        for (let j = -1; j <= 1; j++) {
-                            const newR = r + i;
-                            const newC = c + j;
-                            if (newR >= 0 && newR < currentDifficulty.rows && newC >= 0 && newC < currentDifficulty.cols) {
-                                if (board[newR][newC].isMine) {
-                                    count++;
-                                }
-                            }
-                        }
-                    }
-                    board[r][c].adjacentMines = count;
-                }
-            }
-        }
-        
-    function createBoard() {
-        board = [];
-        gameBoard.innerHTML = '';
-        gameBoard.style.gridTemplateColumns = `repeat(${currentDifficulty.cols}, 1fr)`;
-
-        // 1. Initialize empty board
-        for (let r = 0; r < currentDifficulty.rows; r++) {
-            const row = [];
-            for (let c = 0; c < currentDifficulty.cols; c++) {
+            for (let c = 0; c < difficulty.cols; c++) {
+                const cellEl = document.createElement('div');
+                cellEl.classList.add('cell');
+                cellEl.dataset.row = r;
+                cellEl.dataset.col = c;
+                
+                cellEl.addEventListener('click', handleCellClick);
+                cellEl.addEventListener('contextmenu', handleFlag);
+                
                 row.push({
                     isMine: false,
                     isRevealed: false,
                     isFlagged: false,
                     adjacentMines: 0,
-                    element: null
+                    element: cellEl
                 });
+                gameBoard.appendChild(cellEl);
             }
             board.push(row);
         }
-
-        // 2. Place mines randomly (will be adjusted on first click)
-        
-        // 3. Render the board in HTML and create elements
-        for (let r = 0; r < currentDifficulty.rows; r++) {
-            for (let c = 0; c < currentDifficulty.cols; c++) {
-                const cellEl = document.createElement('div');
-                cellEl.classList.add('cell');
-                cellEl.dataset.row = r;
-                cellEl.dataset.col = c;
-
-                cellEl.addEventListener('click', handleCellClick);
-                cellEl.addEventListener('contextmenu', handleFlag);
-
-                board[r][c].element = cellEl;
-                gameBoard.appendChild(cellEl);
-            }
-        }
     }
 
-    let firstClick = true;
-
     function setupMinesAndNumbers(firstRow, firstCol) {
-        // Place mines randomly, avoiding the first clicked cell
+        const difficulty = difficulties[levelOrder[currentLevelIndex]];
         let minesPlaced = 0;
-        while (minesPlaced < currentDifficulty.mines) {
-            const r = Math.floor(Math.random() * currentDifficulty.rows);
-            const c = Math.floor(Math.random() * currentDifficulty.cols);
+        while (minesPlaced < difficulty.mines) {
+            const r = Math.floor(Math.random() * difficulty.rows);
+            const c = Math.floor(Math.random() * difficulty.cols);
             if (!board[r][c].isMine && !(r === firstRow && c === firstCol)) {
                 board[r][c].isMine = true;
                 minesPlaced++;
             }
         }
 
-        // Calculate adjacent mines
-        for (let r = 0; r < currentDifficulty.rows; r++) {
-            for (let c = 0; c < currentDifficulty.cols; c++) {
-                if (!board[r][c].isMine) {
-                    let count = 0;
-                    for (let i = -1; i <= 1; i++) {
-                        for (let j = -1; j <= 1; j++) {
-                            const newR = r + i;
-                            const newC = c + j;
-                            if (newR >= 0 && newR < currentDifficulty.rows && newC >= 0 && newC < currentDifficulty.cols) {
-                                if (board[newR][newC].isMine) {
-                                    count++;
-                                }
-                            }
+        for (let r = 0; r < difficulty.rows; r++) {
+            for (let c = 0; c < difficulty.cols; c++) {
+                if (board[r][c].isMine) continue;
+                let count = 0;
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        const newR = r + i;
+                        const newC = c + j;
+                        if (newR >= 0 && newR < difficulty.rows && newC >= 0 && newC < difficulty.cols && board[newR][newC].isMine) {
+                            count++;
                         }
                     }
-                    board[r][c].adjacentMines = count;
                 }
+                board[r][c].adjacentMines = count;
             }
         }
     }
 
+    // --- Event Handlers ---
     function handleCellClick(e) {
         if (gameOver) return;
-
+        
         const row = parseInt(e.target.dataset.row);
         const col = parseInt(e.target.dataset.col);
         const cellData = board[row][col];
@@ -177,9 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (cellData.isFlagged || cellData.isRevealed) return;
-
         if (cellData.isMine) {
-            revealAllMines();
             endGame(false);
             return;
         }
@@ -187,18 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCell(row, col);
         checkWinCondition();
     }
-    
+
     function handleFlag(e) {
         e.preventDefault();
         if (gameOver) return;
-
         const row = parseInt(e.target.dataset.row);
         const col = parseInt(e.target.dataset.col);
         const cellData = board[row][col];
-
         if (cellData.isRevealed) return;
 
         cellData.isFlagged = !cellData.isFlagged;
+        const minesLeft = difficulties[levelOrder[currentLevelIndex]].mines;
         
         if(cellData.isFlagged) {
             flags++;
@@ -209,54 +144,55 @@ document.addEventListener('DOMContentLoaded', () => {
             cellData.element.innerHTML = '';
             cellData.element.classList.remove('flagged');
         }
-        minesCountSpan.textContent = currentDifficulty.mines - flags;
+        minesCountSpan.textContent = minesLeft - flags;
     }
 
     function revealCell(r, c) {
+        const difficulty = difficulties[levelOrder[currentLevelIndex]];
         const cellData = board[r][c];
-        if (cellData.isRevealed || cellData.isFlagged || cellData.isMine) return;
+
+        if (cellData.isRevealed || cellData.isFlagged) return;
 
         cellData.isRevealed = true;
         cellData.element.classList.add('revealed');
+
+        if (cellData.isMine) return;
 
         if (cellData.adjacentMines > 0) {
             cellData.element.textContent = cellData.adjacentMines;
             cellData.element.classList.add(`c${cellData.adjacentMines}`);
         } else {
-            // Recursively reveal neighbors if cell is empty
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     const newR = r + i;
                     const newC = c + j;
-                    if (newR >= 0 && newR < currentDifficulty.rows && newC >= 0 && newC < currentDifficulty.cols) {
-                        if (!board[newR][newC].isRevealed) {
-                           revealCell(newR, newC);
-                        }
+                    if (newR >= 0 && newR < difficulty.rows && newC >= 0 && newC < difficulty.cols) {
+                        revealCell(newR, newC);
                     }
                 }
             }
         }
     }
 
+    // --- Game Lifecycle ---
     function startTimer() {
+        if(timer) clearInterval(timer);
         timeElapsed = 0;
         timer = setInterval(() => {
             timeElapsed++;
             timerSpan.textContent = timeElapsed;
         }, 1000);
     }
-    
-    // --- Game Lifecycle ---
+
     function checkWinCondition() {
+        const difficulty = difficulties[levelOrder[currentLevelIndex]];
         let revealedCount = 0;
-        for (let r = 0; r < currentDifficulty.rows; r++) {
-            for (let c = 0; c < currentDifficulty.cols; c++) {
-                if (board[r][c].isRevealed) {
-                    revealedCount++;
-                }
+        for (let r = 0; r < difficulty.rows; r++) {
+            for (let c = 0; c < difficulty.cols; c++) {
+                if (board[r][c].isRevealed) revealedCount++;
             }
         }
-        if (revealedCount === currentDifficulty.rows * currentDifficulty.cols - currentDifficulty.mines) {
+        if (revealedCount === difficulty.rows * difficulty.cols - difficulty.mines) {
             endGame(true);
         }
     }
@@ -264,21 +200,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function endGame(isWin) {
         gameOver = true;
         clearInterval(timer);
-        const messageEl = document.getElementById('game-over-message');
-        const resultTextEl = document.getElementById('result-text');
         
         if (isWin) {
-            resultTextEl.textContent = `You win! Your time: ${timeElapsed}s`;
+            const currentLevelName = difficulties[levelOrder[currentLevelIndex]].name;
+            resultTextEl.textContent = `You cleared ${currentLevelName} in ${timeElapsed}s!`;
+            messageEl.classList.remove('hidden');
+
+            setTimeout(() => {
+                currentLevelIndex++;
+                if (currentLevelIndex >= levelOrder.length) {
+                    alert("You've mastered all levels! Restarting from the beginning.");
+                    currentLevelIndex = 0;
+                }
+                startGame();
+            }, 3000);
+
         } else {
             resultTextEl.textContent = 'You lose! You hit a mine.';
             revealAllMines();
+            messageEl.classList.remove('hidden');
         }
-        messageEl.classList.remove('hidden');
     }
 
     function revealAllMines() {
-        for (let r = 0; r < currentDifficulty.rows; r++) {
-            for (let c = 0; c < currentDifficulty.cols; c++) {
+        const difficulty = difficulties[levelOrder[currentLevelIndex]];
+        for (let r = 0; r < difficulty.rows; r++) {
+            for (let c = 0; c < difficulty.cols; c++) {
                 if (board[r][c].isMine) {
                     board[r][c].element.classList.add('mine');
                     board[r][c].element.innerHTML = '💣';
@@ -287,9 +234,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    restartBtn.addEventListener('click', startGame);
-    difficultySelector.addEventListener('change', startGame);
+    restartBtn.addEventListener('click', () => {
+        currentLevelIndex = 0;
+        startGame();
+    });
 
     // Initial game start
     startGame();
