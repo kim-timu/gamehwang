@@ -6,8 +6,6 @@ const gameOverElement = document.getElementById('game-over');
 const restartButton = document.getElementById('restart');
 const nextCanvas = document.getElementById('next');
 const nextContext = nextCanvas.getContext('2d');
-const rotateButton = document.getElementById('rotate-btn');
-const dropButton = document.getElementById('drop-btn');
 
 const COLS = 10;
 const ROWS = 20;
@@ -55,7 +53,8 @@ function arenaSweep() {
 
         player.score += rowCount * 10;
         player.level = Math.floor(player.score / 100);
-        player.speed = 1000 - player.level * 100;
+        // Increase speed exponentially as level increases
+        player.speed = 1000 * Math.pow(0.85, player.level);
         rowCount *= 2;
     }
 }
@@ -352,15 +351,6 @@ document.addEventListener('touchend', event => {
     }
 });
 
-
-// Button Controls
-rotateButton.addEventListener('click', () => {
-    playerRotate(1);
-});
-
-dropButton.addEventListener('click', () => {
-    playerHardDrop();
-});
 
 restartButton.addEventListener('click', () => {
     arena.forEach(row => row.fill(0));
