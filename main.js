@@ -3,9 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const movesCountSpan = document.getElementById('moves-count');
     const restartBtn = document.getElementById('restart-btn');
 
-    const emojis = ['😊', '😂', '😍', '🤔', '😎', '😡', '😭', '🤯'];
-    let cards = [...emojis, ...emojis];
+    // Expanded emoji list for larger boards
+    const allEmojis = [
+        '😊', '😂', '😍', '🤔', '😎', '😡', '😭', '🤯',
+        '👍', '👎', '❤️', '🔥', '⭐', '🚀', '💯', '🎉',
+        '🐶', '🐱'
+    ];
+    
+    const gridLevels = [4, 6]; // Defines grid dimensions for levels: 4x4, 6x6
+    let currentLevelIndex = 0;
 
+    let cards = [];
     let flippedCards = [];
     let matchedPairs = 0;
     let moves = 0;
@@ -19,13 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createBoard() {
+        const dimension = gridLevels[currentLevelIndex];
         gameBoard.innerHTML = '';
+        gameBoard.style.gridTemplateColumns = `repeat(${dimension}, 1fr)`;
+        
         moves = 0;
         matchedPairs = 0;
         movesCountSpan.textContent = moves;
         flippedCards = [];
         lockBoard = false;
         
+        const numPairs = (dimension * dimension) / 2;
+        const emojisForLevel = allEmojis.slice(0, numPairs);
+        cards = [...emojisForLevel, ...emojisForLevel];
         shuffle(cards);
 
         cards.forEach(emoji => {
@@ -67,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const [card1, card2] = flippedCards;
 
         if (card1.dataset.emoji === card2.dataset.emoji) {
-            // Matched
             card1.classList.add('is-matched');
             card2.classList.add('is-matched');
             matchedPairs++;
@@ -75,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
             lockBoard = false;
             checkWinCondition();
         } else {
-            // Not a match
             setTimeout(() => {
                 card1.classList.remove('is-flipped');
                 card2.classList.remove('is-flipped');
@@ -86,14 +98,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkWinCondition() {
-        if (matchedPairs === emojis.length) {
+        const dimension = gridLevels[currentLevelIndex];
+        const numPairs = (dimension * dimension) / 2;
+
+        if (matchedPairs === numPairs) {
             setTimeout(() => {
-                alert(`Congratulations! You won in ${moves} moves!`);
+                alert(`Congratulations! You cleared the ${dimension}x${dimension} board in ${moves} moves!`);
+                currentLevelIndex++;
+                if (currentLevelIndex >= gridLevels.length) {
+                    alert("You've mastered all levels! Restarting from the beginning.");
+                    currentLevelIndex = 0;
+                }
+                createBoard();
             }, 500);
         }
     }
 
-    restartBtn.addEventListener('click', createBoard);
+    restartBtn.addEventListener('click', () => {
+        currentLevelIndex = 0;
+        createBoard();
+    });
 
     // Initial board creation
     createBoard();

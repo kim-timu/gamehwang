@@ -19,14 +19,15 @@ A classic web-based memory card game where the player flips cards to find and ma
 
 ## Features
 
-*   **Game Board:** A 4x4 grid of 16 cards, generated dynamically with JavaScript.
+*   **Progressive Levels:** The game starts with a 4x4 grid. After winning, the player advances to a 6x6 grid. After clearing all levels, the game resets to the beginning.
+*   **Game Board:** A dynamic grid of cards, generated with JavaScript.
 *   **Card Shuffling:** Cards are randomly shuffled at the start of each game.
 *   **Card Flipping:** Clicking a card flips it over to reveal the image. A maximum of two cards can be flipped at a time.
 *   **Matching Logic:**
     *   If the two flipped cards have the same image, they remain face-up.
     *   If they do not match, they are automatically flipped back face-down after a short delay (1 second).
-*   **Win Condition:** The game is won when all pairs have been successfully matched. A confirmation message is displayed.
-*   **Restart Game:** A "Restart Game" button allows the player to shuffle the board and start a new game at any time.
+*   **Win Condition:** The game is won when all pairs have been successfully matched. A confirmation message is displayed, and the next level is loaded.
+*   **Restart Game:** A "Restart Game" button allows the player to reset the game to the first level (4x4) at any time.
 *   **Move Counter:** A display that counts how many moves (pairs of flips) the player has made.
 
 ## Current Development Plan
@@ -40,3 +41,12 @@ A classic web-based memory card game where the player flips cards to find and ma
     *   Build the core matching and game state logic.
     *   Implement the win condition and restart functionality.
 4.  **[Completed]** **Final Review:** Test the game for bugs and ensure all features work as intended.
+
+## Enhancements
+
+1.  **[Completed]** **Progressive Levels (`main.js`):**
+    *   Implemented a level system (`[4x4, 6x6]`).
+    *   Expanded the emoji set to support larger boards.
+    *   Updated `createBoard()` to dynamically generate grids based on the current level.
+    *   Modified `checkWinCondition()` to advance to the next level upon completion.
+    *   Updated the restart button to reset the game to level 1.
