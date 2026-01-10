@@ -17,6 +17,14 @@ A classic web-based memory card game where the player flips cards to find and ma
     *   **Button Hover:** A subtle "glow" effect on the reset button.
 *   **Iconography:** A set of fun and easily distinguishable Emojis will be used for the card faces.
 
+## Global Features
+
+### Test Mode Integration
+
+*   **Description:** This game integrates with the global "Test Mode" feature accessible from the main game hub.
+*   **Functionality:** When "Test Mode" is active, a "Pass" button appears on each level. Clicking this button allows instant progression to the next level (or the game hub for the final level), bypassing normal game completion.
+*   **State Persistence:** The test mode state is managed globally via `localStorage`.
+
 ## Features
 
 *   **Level 1 (4x4 Grid):** `imagemat01.html`
@@ -28,7 +36,7 @@ A classic web-based memory card game where the player flips cards to find and ma
 *   **Matching Logic:**
     *   If the two flipped cards have the same image, they remain face-up.
     *   If they do not match, they are automatically flipped back face-down after a short delay (1 second).
-*   **Win Condition:** The game for a specific level is won when all pairs have been successfully matched. A confirmation message is displayed, and the player is redirected to the next level's HTML file. After the final level, the player is redirected to the main game hub.
+*   **Win Condition:** The game for a specific level is won when all pairs have been successfully matched. A confirmation message is displayed, and the player is redirected to the next level's HTML file. Alternatively, if "Test Mode" is active, the level can be passed instantly using the "Pass" button. After the final level, the player is redirected to the main game hub.
 *   **Restart Game:** A "Restart" button on each level allows the player to reset the current level.
 *   **Move Counter:** A display that counts how many moves (pairs of flips) the player has made for the current level.
 

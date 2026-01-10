@@ -15,6 +15,14 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
     *   Flags: Orange (`#f57c00`).
 *   **Typography:** Clean, sans-serif font (Poppins).
 
+## Global Features
+
+### Test Mode Integration
+
+*   **Description:** This game integrates with the global "Test Mode" feature accessible from the main game hub.
+*   **Functionality:** When "Test Mode" is active, a "Pass" button appears on each level. Clicking this button allows instant progression to the next level (or the game hub for the final level), bypassing normal game completion.
+*   **State Persistence:** The test mode state is managed globally via `localStorage`.
+
 ## Features
 
 *   **Level 1 (Easy - 9x9, 10 mines):** `minesweeper01.html`
@@ -29,7 +37,7 @@ A classic Minesweeper game built with standard HTML, CSS, and JavaScript. The ga
 *   **Mine Counter:** Displays the total number of mines minus the number of flags placed.
 *   **Win/Loss Condition:**
     *   **Loss:** The player loses if they click on a mine. All mines are revealed.
-    *   **Win:** The player wins by revealing all non-mine cells. A confirmation message is displayed, and the player is redirected to the next level's HTML file. After the final level, the player is redirected to the main game hub.
+    *   **Win:** The player wins by revealing all non-mine cells. A confirmation message is displayed, and the player is redirected to the next level's HTML file. Alternatively, if "Test Mode" is active, the level can be passed instantly using the "Pass" button. After the final level, the player is redirected to the main game hub.
 *   **Restart Game:** A "New Game" button on each level allows the player to restart the current level.
 
 ## Development Plan

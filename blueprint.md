@@ -31,6 +31,14 @@ The project is organized into subdirectories for each game, with a main `index.h
     └── blueprint.md        # Blueprint for the Minesweeper Game
 ```
 
+## Global Features
+
+### Test Mode
+
+*   **Description:** A feature accessible from the main game hub (`index.html`) via a checkbox. When activated, it enables a "Pass" button on every game level.
+*   **Functionality:** Clicking the "Pass" button instantly advances the player to the next level (or the game hub if it's the last level), allowing for quick testing and demonstration without completing the game normally.
+*   **State Persistence:** The state of the "Test Mode" checkbox is saved in `localStorage`, so it persists across page reloads and navigations.
+
 ## Games
 
 ### 1. Image Matching Game

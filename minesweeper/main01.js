@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const restartBtn = document.getElementById('restart-btn');
+    const passBtn = document.getElementById('pass-btn');
     const gameBoard = document.getElementById('game-board');
     const minesCountSpan = document.getElementById('mines-count');
     const timerSpan = document.getElementById('timer');
@@ -17,6 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let flags = 0;
     let timer;
     let timeElapsed = 0;
+
+    // Check test mode state and display pass button
+    if (localStorage.getItem('acdgames_test_mode') === 'true') {
+        passBtn.style.display = 'inline-block';
+    }
+
+    passBtn.addEventListener('click', () => {
+        window.location.href = nextLevelURL; // Pass level instantly
+    });
 
     // --- Game Setup ---
     function startGame() {

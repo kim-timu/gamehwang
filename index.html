@@ -60,10 +60,33 @@
 <body>
     <div class="hub-container">
         <h1>Select a Game</h1>
+        <div class="test-mode-toggle" style="margin-bottom: 20px;">
+            <input type="checkbox" id="test-mode-checkbox">
+            <label for="test-mode-checkbox">Test Mode</label>
+        </div>
         <div class="game-list">
             <a href="matching-game/imagemat01.html" class="game-link">Image Matching Game</a>
             <a href="minesweeper/minesweeper01.html" class="game-link minesweeper">Minesweeper</a>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const testModeCheckbox = document.getElementById('test-mode-checkbox');
+            const TEST_MODE_KEY = 'acdgames_test_mode';
+
+            // Load state from localStorage
+            const savedState = localStorage.getItem(TEST_MODE_KEY);
+            if (savedState === 'true') {
+                testModeCheckbox.checked = true;
+            } else {
+                testModeCheckbox.checked = false;
+            }
+
+            // Save state to localStorage on change
+            testModeCheckbox.addEventListener('change', () => {
+                localStorage.setItem(TEST_MODE_KEY, testModeCheckbox.checked);
+            });
+        });
+    </script>
 </body>
 </html>

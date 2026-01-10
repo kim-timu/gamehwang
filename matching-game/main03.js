@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
     const movesCountSpan = document.getElementById('moves-count');
     const restartBtn = document.getElementById('restart-btn');
+    const passBtn = document.getElementById('pass-btn');
 
     const allEmojis = [
         '😊', '😂', '😍', '🤔', '😎', '😡', '😭', '🤯',
@@ -20,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let matchedPairs = 0;
     let moves = 0;
     let lockBoard = false;
+
+    // Check test mode state and display pass button
+    if (localStorage.getItem('acdgames_test_mode') === 'true') {
+        passBtn.style.display = 'inline-block';
+    }
+
+    passBtn.addEventListener('click', () => {
+        window.location.href = finalCompletionURL; // Pass level instantly
+    });
 
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
