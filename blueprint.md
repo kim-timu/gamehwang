@@ -2,14 +2,16 @@
 
 ## Project Overview
 
-This project is a web-based games hub that hosts a collection of classic games built with plain HTML, CSS, and JavaScript. The main page allows users to select which game they want to play.
+This project is a web-based games hub that hosts a collection of classic games built with plain HTML, CSS, and JavaScript. The main page allows users to select which game they want to play. It also includes an admin page for file browsing.
 
 ## Project Structure
 
-The project is organized into subdirectories for each game, with a main `index.html` at the root serving as the hub.
+The project is organized into subdirectories for each game, with a main `index.html` at the root serving as the hub, and an `admin.html` for file management.
 
 ```
 /
+├── admin.html              # Admin page for browsing project files
+├── admin.js                # JavaScript for the admin page functionality
 ├── index.html              # The main game selection hub
 ├── matching-game/
 │   ├── imagemat01.html     # Image Matching Game - Level 1 (4x4)
@@ -44,3 +46,8 @@ The project is organized into subdirectories for each game, with a main `index.h
 *   **Description:** A faithful recreation of the classic Minesweeper game with difficulty levels separated into individual HTML files.
 *   **Starting Point:** `/minesweeper/minesweeper01.html`
 *   **Details:** See the [Minesweeper Blueprint](./minesweeper/blueprint.md).
+
+## Admin Page
+
+*   **Description:** A simple file browser page that statically lists all project files. Users can click on a file to view its content (HTML files are loaded in an iframe, text files are displayed as raw text, and images are displayed).
+*   **Starting Point:** `/admin.html`
