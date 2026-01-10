@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Sequence Puzzle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>Number Sequence Puzzle</h1>
+            <div class="game-controls">
+                <div class="control-item">
+                    <label for="difficulty">Size:</label>
+                    <select id="difficulty">
+                        <option value="3">3x3 (8 tiles)</option>
+                        <option value="4" selected>4x4 (15 tiles)</option>
+                        <option value="5">5x5 (24 tiles)</option>
+                    </select>
+                </div>
+                <button id="shuffle-btn">Shuffle</button>
+                <button id="pass-btn" style="display: none;">Pass</button>
+            </div>
+            <div class="game-info">
+                <span class="info-item">Moves: <span id="moves-count">0</span></span>
+                <span class="info-item">Time: <span id="timer">0</span>s</span>
+            </div>
+        </header>
+        <div id="game-board" class="game-board"></div>
+        <div id="game-over-message" class="hidden">
+            <h2>Congratulations!</h2>
+            <p id="result-text"></p>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

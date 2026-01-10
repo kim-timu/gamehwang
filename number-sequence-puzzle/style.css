@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --text-color: #333;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --tile-bg: #e0e5ec;
+    --tile-text: #333;
+    --empty-tile-bg: #c0c0c0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 500px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.game-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--bg-color);
+}
+
+.game-header h1 {
+    font-size: 2em;
+    color: var(--text-color);
+    margin: 0 0 15px 0;
+    font-weight: 600;
+}
+
+.game-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.control-item label {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+#shuffle-btn, #pass-btn, select {
+    padding: 10px 15px;
+    font-size: 1em;
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+#shuffle-btn:hover, #pass-btn:hover, select:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+select {
+    color: var(--text-color);
+    background-color: var(--tile-bg);
+    box-shadow: none;
+    border: 1px solid #ccc;
+    min-width: 120px;
+}
+
+.game-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.game-board {
+    display: grid;
+    gap: 5px;
+    width: min-content; /* Adjust width to content */
+    margin: 0 auto;
+    border: 5px solid var(--tile-bg);
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.tile {
+    width: 80px;
+    height: 80px;
+    background-color: var(--tile-bg);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--tile-text);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, background-color 0.2s;
+    box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+.tile.empty {
+    background-color: var(--empty-tile-bg);
+    cursor: default;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tile:not(.empty):hover {
+    transform: scale(1.05);
+    background-color: lighten(var(--tile-bg), 5%);
+}
+
+#game-over-message {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    font-weight: 600;
+    display: none;
+}
+#game-over-message.hidden {
+    display: none;
+}
+#game-over-message h2 {
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+@media (max-width: 500px) {
+    .game-container {
+        padding: 15px;
+    }
+    .tile {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5em;
+    }
+    #shuffle-btn, #pass-btn, select {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+    .game-info {
+        gap: 15px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 350px) {
+    .tile {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2em;
+    }
+    .game-board {
+        gap: 3px;
+    }
+}
