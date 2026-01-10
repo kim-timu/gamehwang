@@ -2,13 +2,13 @@
 
 ## Overview
 
-A classic web-based memory card game where the player flips cards to find and match pairs of images. The game is built with standard HTML, CSS, and JavaScript, focusing on a clean, responsive design and smooth user experience.
+A classic web-based memory card game where the player flips cards to find and match pairs of images. The game is structured into distinct HTML and JavaScript files for each level, ensuring clear progression.
 
 ## Design and Style
 
 *   **Layout:** A centered, responsive grid for the game board that adapts to various screen sizes.
 *   **Color Palette:** A modern and playful color scheme.
-    *   Background: A soft, light gray (`#f0f0f0`) with a subtle noise texture.
+    *   Background: A soft, light gray (`#f0f2f5`) with a subtle noise texture.
     *   Cards: White cards (`#ffffff`) with a pronounced drop shadow to give a "lifted" feel.
     *   Accent/Highlight: A vibrant blue (`#007bff`) for buttons and interactive elements.
 *   **Typography:** Clean, sans-serif font (like Arial or Helvetica) for readability.
@@ -19,18 +19,20 @@ A classic web-based memory card game where the player flips cards to find and ma
 
 ## Features
 
-*   **Progressive Levels:** The game starts with a 4x4 grid. After winning, the player advances to a 6x6 grid, and then an 8x8 grid. After clearing all levels, the game resets to the beginning.
-*   **Game Board:** A dynamic grid of cards, generated with JavaScript.
-*   **Card Shuffling:** Cards are randomly shuffled at the start of each game.
+*   **Level 1 (4x4 Grid):** `imagemat01.html`
+*   **Level 2 (6x6 Grid):** `imagemat02.html`
+*   **Level 3 (8x8 Grid):** `imagemat03.html`
+*   **Game Board:** A static grid for each level, defined in its respective HTML and JavaScript file.
+*   **Card Shuffling:** Cards are randomly shuffled at the start of each level.
 *   **Card Flipping:** Clicking a card flips it over to reveal the image. A maximum of two cards can be flipped at a time.
 *   **Matching Logic:**
     *   If the two flipped cards have the same image, they remain face-up.
     *   If they do not match, they are automatically flipped back face-down after a short delay (1 second).
-*   **Win Condition:** The game is won when all pairs have been successfully matched. A confirmation message is displayed, and the next level is loaded.
-*   **Restart Game:** A "Restart Game" button allows the player to reset the game to the first level (4x4) at any time.
-*   **Move Counter:** A display that counts how many moves (pairs of flips) the player has made.
+*   **Win Condition:** The game for a specific level is won when all pairs have been successfully matched. A confirmation message is displayed, and the player is redirected to the next level's HTML file. After the final level, the player is redirected to the main game hub.
+*   **Restart Game:** A "Restart" button on each level allows the player to reset the current level.
+*   **Move Counter:** A display that counts how many moves (pairs of flips) the player has made for the current level.
 
-## Current Development Plan
+## Development Plan
 
 1.  **[Completed]** **Structure (`index.html`):** Create the main HTML structure for the game, including the game board container, score panel, and restart button.
 2.  **[Completed]** **Styling (`style.css`):** Implement the full visual design, including the responsive layout, card styles, and flip animations.
@@ -42,12 +44,14 @@ A classic web-based memory card game where the player flips cards to find and ma
     *   Implement the win condition and restart functionality.
 4.  **[Completed]** **Final Review:** Test the game for bugs and ensure all features work as intended.
 
-## Enhancements
+## Refactoring for File-per-Level Structure
 
-1.  **[Completed]** **Progressive Levels (`main.js`):**
-    *   Implemented a level system (`[4x4, 6x6, 8x8]`).
-    *   Expanded the emoji set to support larger boards.
-    *   Updated `createBoard()` to dynamically generate grids based on the current level.
-    *   Modified `checkWinCondition()` to advance to the next level upon completion.
-    *   Updated the restart button to reset the game to level 1.
-    *   Adjusted CSS to handle smaller cards on larger boards.
+1.  **[Completed]** **Level 1 (4x4) (`imagemat01.html`, `main01.js`):**
+    *   Hardcoded dimension to 4.
+    *   Win condition redirects to `imagemat02.html`.
+2.  **[Completed]** **Level 2 (6x6) (`imagemat02.html`, `main02.js`):**
+    *   Hardcoded dimension to 6.
+    *   Win condition redirects to `imagemat03.html`.
+3.  **[Completed]** **Level 3 (8x8) (`imagemat03.html`, `main03.js`):**
+    *   Hardcoded dimension to 8.
+    *   Win condition redirects to the main game hub (`../../index.html`).

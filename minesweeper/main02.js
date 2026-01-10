@@ -7,14 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageEl = document.getElementById('game-over-message');
     const resultTextEl = document.getElementById('result-text');
 
-    // Game Settings
-    const difficulties = {
-        easy: { name: 'Easy', rows: 9, cols: 9, mines: 10 },
-        medium: { name: 'Medium', rows: 16, cols: 16, mines: 40 },
-        hard: { name: 'Hard', rows: 16, cols: 30, mines: 99 }
-    };
-    const levelOrder = ['easy', 'medium', 'hard'];
-    let currentLevelIndex = 0;
+    // Game Settings (Hardcoded for Medium level)
+    const currentDifficulty = { name: 'Medium', rows: 16, cols: 16, mines: 40 };
+    const nextLevelURL = 'minesweeper03.html'; // Redirect to next level
 
     let board = [];
     let gameOver = false;
@@ -25,9 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game Setup ---
     function startGame() {
-        const levelKey = levelOrder[currentLevelIndex];
-        const currentDifficulty = difficulties[levelKey];
-
         gameOver = false;
         firstClick = true;
         flags = 0;
@@ -71,26 +63,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupMinesAndNumbers(firstRow, firstCol) {
-        const difficulty = difficulties[levelOrder[currentLevelIndex]];
         let minesPlaced = 0;
-        while (minesPlaced < difficulty.mines) {
-            const r = Math.floor(Math.random() * difficulty.rows);
-            const c = Math.floor(Math.random() * difficulty.cols);
+        while (minesPlaced < currentDifficulty.mines) {
+            const r = Math.floor(Math.random() * currentDifficulty.rows);
+            const c = Math.floor(Math.random() * currentDifficulty.cols);
             if (!board[r][c].isMine && !(r === firstRow && c === firstCol)) {
                 board[r][c].isMine = true;
                 minesPlaced++;
             }
         }
 
-        for (let r = 0; r < difficulty.rows; r++) {
-            for (let c = 0; c < difficulty.cols; c++) {
+        for (let r = 0; r < currentDifficulty.rows; r++) {
+            for (let c = 0; c < currentDifficulty.cols; c++) {
                 if (board[r][c].isMine) continue;
                 let count = 0;
                 for (let i = -1; i <= 1; i++) {
                     for (let j = -1; j <= 1; j++) {
                         const newR = r + i;
                         const newC = c + j;
-                        if (newR >= 0 && newR < difficulty.rows && newC >= 0 && newC < difficulty.cols && board[newR][newC].isMine) {
+                        if (newR >= 0 && newR < currentDifficulty.rows && newC >= 0 && newC < currentDifficulty.cols && board[newR][newC].isMine) {
                             count++;
                         }
                     }
@@ -133,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cellData.isRevealed) return;
 
         cellData.isFlagged = !cellData.isFlagged;
-        const minesLeft = difficulties[levelOrder[currentLevelIndex]].mines;
+        const minesLeft = currentDifficulty.mines;
         
         if(cellData.isFlagged) {
             flags++;
@@ -148,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function revealCell(r, c) {
-        const difficulty = difficulties[levelOrder[currentLevelIndex]];
         const cellData = board[r][c];
 
         if (cellData.isRevealed || cellData.isFlagged) return;
@@ -166,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let j = -1; j <= 1; j++) {
                     const newR = r + i;
                     const newC = c + j;
-                    if (newR >= 0 && newR < difficulty.rows && newC >= 0 && newC < difficulty.cols) {
+                    if (newR >= 0 && newR < currentDifficulty.rows && newC >= 0 && newC < currentDifficulty.cols) {
                         revealCell(newR, newC);
                     }
                 }
@@ -185,14 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkWinCondition() {
-        const difficulty = difficulties[levelOrder[currentLevelIndex]];
         let revealedCount = 0;
-        for (let r = 0; r < difficulty.rows; r++) {
-            for (let c = 0; c < difficulty.cols; c++) {
+        for (let r = 0; r < currentDifficulty.rows; r++) {
+            for (let c = 0; c < currentDifficulty.cols; c++) {
                 if (board[r][c].isRevealed) revealedCount++;
             }
         }
-        if (revealedCount === difficulty.rows * difficulty.cols - difficulty.mines) {
+        if (revealedCount === currentDifficulty.rows * currentDifficulty.cols - currentDifficulty.mines) {
             endGame(true);
         }
     }
@@ -202,17 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timer);
         
         if (isWin) {
-            const currentLevelName = difficulties[levelOrder[currentLevelIndex]].name;
-            resultTextEl.textContent = `You cleared ${currentLevelName} in ${timeElapsed}s!`;
+            resultTextEl.textContent = `You cleared Medium level in ${timeElapsed}s!`;
             messageEl.classList.remove('hidden');
 
             setTimeout(() => {
-                currentLevelIndex++;
-                if (currentLevelIndex >= levelOrder.length) {
-                    alert("You've mastered all levels! Restarting from the beginning.");
-                    currentLevelIndex = 0;
-                }
-                startGame();
+                window.location.href = nextLevelURL; // Redirect to the next level
             }, 3000);
 
         } else {
@@ -223,9 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function revealAllMines() {
-        const difficulty = difficulties[levelOrder[currentLevelIndex]];
-        for (let r = 0; r < difficulty.rows; r++) {
-            for (let c = 0; c < difficulty.cols; c++) {
+        for (let r = 0; r < currentDifficulty.rows; r++) {
+            for (let c = 0; c < currentDifficulty.cols; c++) {
                 if (board[r][c].isMine) {
                     board[r][c].element.classList.add('mine');
                     board[r][c].element.innerHTML = '💣';
@@ -234,10 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    restartBtn.addEventListener('click', () => {
-        currentLevelIndex = 0;
-        startGame();
-    });
+    restartBtn.addEventListener('click', startGame);
 
     // Initial game start
     startGame();

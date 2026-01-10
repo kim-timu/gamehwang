@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const movesCountSpan = document.getElementById('moves-count');
     const restartBtn = document.getElementById('restart-btn');
 
-    // Expanded emoji list for larger boards
     const allEmojis = [
         '😊', '😂', '😍', '🤔', '😎', '😡', '😭', '🤯',
         '👍', '👎', '❤️', '🔥', '⭐', '🚀', '💯', '🎉',
@@ -12,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
         '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦄'
     ];
     
-    const gridLevels = [4, 6, 8]; // Defines grid dimensions for levels: 4x4, 6x6, 8x8
-    let currentLevelIndex = 0;
+    // Hardcoded for Level 1 (4x4)
+    const dimension = 4;
+    const nextLevelURL = 'imagemat02.html'; // Redirect to next level
 
     let cards = [];
     let flippedCards = [];
@@ -29,18 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createBoard() {
-        const dimension = gridLevels[currentLevelIndex];
         gameBoard.innerHTML = '';
         
-        // Remove old grid classes and add the new one
         gameBoard.className = 'game-board'; // Reset classes
         gameBoard.classList.add(`grid-${dimension}`);
 
-        if (dimension === 8) {
-            gameContainer.classList.add('grid-8-container');
-        } else {
-            gameContainer.classList.remove('grid-8-container');
-        }
+        // No grid-8-container for 4x4
+        gameContainer.classList.remove('grid-8-container');
 
         gameBoard.style.gridTemplateColumns = `repeat(${dimension}, 1fr)`;
         
@@ -111,27 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkWinCondition() {
-        const dimension = gridLevels[currentLevelIndex];
         const numPairs = (dimension * dimension) / 2;
 
         if (matchedPairs === numPairs) {
             setTimeout(() => {
-                alert(`Congratulations! You cleared the ${dimension}x${dimension} board in ${moves} moves!`);
-                currentLevelIndex++;
-                if (currentLevelIndex >= gridLevels.length) {
-                    alert("You've mastered all levels! Restarting from the beginning.");
-                    currentLevelIndex = 0;
-                }
-                createBoard();
+                alert(`Congratulations! You cleared Level 1 (4x4) in ${moves} moves!`);
+                window.location.href = nextLevelURL; // Redirect to the next level
             }, 500);
         }
     }
 
     restartBtn.addEventListener('click', () => {
-        currentLevelIndex = 0;
-        createBoard();
+        createBoard(); // Restart current level
     });
 
-    // Initial board creation
-    createBoard();
+    createBoard(); // Initial board creation
 });
