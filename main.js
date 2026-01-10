@@ -1,324 +1,100 @@
-const canvas = document.getElementById('tetris');
-const context = canvas.getContext('2d');
-const scoreElement = document.getElementById('score');
-const levelElement = document.getElementById('level');
-const gameOverElement = document.getElementById('game-over');
-const restartButton = document.getElementById('restart');
-const nextCanvas = document.getElementById('next');
-const nextContext = nextCanvas.getContext('2d');
+document.addEventListener('DOMContentLoaded', () => {
+    const gameBoard = document.getElementById('game-board');
+    const movesCountSpan = document.getElementById('moves-count');
+    const restartBtn = document.getElementById('restart-btn');
 
-const COLS = 10;
-const ROWS = 20;
-const BLOCK_SIZE = 24;
+    const emojis = ['😊', '😂', '😍', '🤔', '😎', '😡', '😭', '🤯'];
+    let cards = [...emojis, ...emojis];
 
-context.scale(BLOCK_SIZE, BLOCK_SIZE);
-nextContext.scale(BLOCK_SIZE, BLOCK_SIZE);
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let moves = 0;
+    let lockBoard = false;
 
-const COLORS = [
-    null,
-    '#FF0D72',
-    '#0DC2FF',
-    '#0DFF72',
-    '#F538FF',
-    '#FF8E0D',
-    '#FFE138',
-    '#3877FF',
-];
-
-const arena = createMatrix(COLS, ROWS);
-
-const player = {
-    pos: {x: 0, y: 0},
-    matrix: null,
-    score: 0,
-    next: null,
-    level: 0,
-    speed: 1000,
-};
-
-let animationFrameId;
-
-function arenaSweep() {
-    let rowCount = 1;
-    outer: for (let y = arena.length - 1; y > 0; --y) {
-        for (let x = 0; x < arena[y].length; ++x) {
-            if (arena[y][x] === 0) {
-                continue outer;
-            }
-        }
-
-        const row = arena.splice(y, 1)[0].fill(0);
-        arena.unshift(row);
-        ++y;
-
-        player.score += rowCount * 10;
-        player.level = Math.floor(player.score / 100);
-        player.speed = 1000 - player.level * 100;
-        rowCount *= 2;
-    }
-}
-
-function collide(arena, player) {
-    const [m, o] = [player.matrix, player.pos];
-    for (let y = 0; y < m.length; ++y) {
-        for (let x = 0; x < m[y].length; ++x) {
-            if (m[y][x] !== 0 &&
-               (arena[y + o.y] &&
-                arena[y + o.y][x + o.x]) !== 0) {
-                return true;
-            }
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
     }
-    return false;
-}
 
-function createMatrix(w, h) {
-    const matrix = [];
-    while (h--) {
-        matrix.push(new Array(w).fill(0));
-    }
-    return matrix;
-}
+    function createBoard() {
+        gameBoard.innerHTML = '';
+        moves = 0;
+        matchedPairs = 0;
+        movesCountSpan.textContent = moves;
+        flippedCards = [];
+        lockBoard = false;
+        
+        shuffle(cards);
 
-function createPiece(type) {
-    if (type === 'T') {
-        return [
-            [0, 0, 0],
-            [1, 1, 1],
-            [0, 1, 0],
-        ];
-    } else if (type === 'O') {
-        return [
-            [2, 2],
-            [2, 2],
-        ];
-    } else if (type === 'L') {
-        return [
-            [0, 3, 0],
-            [0, 3, 0],
-            [0, 3, 3],
-        ];
-    } else if (type === 'J') {
-        return [
-            [0, 4, 0],
-            [0, 4, 0],
-            [4, 4, 0],
-        ];
-    } else if (type === 'I') {
-        return [
-            [0, 5, 0, 0],
-            [0, 5, 0, 0],
-            [0, 5, 0, 0],
-            [0, 5, 0, 0],
-        ];
-    } else if (type === 'S') {
-        return [
-            [0, 6, 6],
-            [6, 6, 0],
-            [0, 0, 0],
-        ];
-    } else if (type === 'Z') {
-        return [
-            [7, 7, 0],
-            [0, 7, 7],
-            [0, 0, 0],
-        ];
-    }
-}
+        cards.forEach(emoji => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.emoji = emoji;
 
-function draw() {
-    context.fillStyle = '#000';
-    context.fillRect(0, 0, canvas.width, canvas.height);
+            card.innerHTML = `
+                <div class="card-face card-front">${emoji}</div>
+                <div class="card-face card-back">?</div>
+            `;
 
-    drawMatrix(arena, {x: 0, y: 0}, context);
-    drawMatrix(player.matrix, player.pos, context);
-}
-
-function drawMatrix(matrix, offset, ctx) {
-    matrix.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if (value !== 0) {
-                ctx.fillStyle = COLORS[value];
-                ctx.fillRect(x + offset.x,
-                                 y + offset.y,
-                                 1, 1);
-            }
+            card.addEventListener('click', handleCardClick);
+            gameBoard.appendChild(card);
         });
-    });
-}
-
-function drawNextPiece() {
-    nextContext.fillStyle = '#000';
-    nextContext.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
-    drawMatrix(player.next, {x: 1, y: 1}, nextContext);
-}
-
-function merge(arena, player) {
-    player.matrix.forEach((row, y) => {
-        row.forEach((value, x) => {
-            if (value !== 0) {
-                arena[y + player.pos.y][x + player.pos.x] = value;
-            }
-        });
-    });
-}
-
-function playerDrop() {
-    player.pos.y++;
-    if (collide(arena, player)) {
-        player.pos.y--;
-        merge(arena, player);
-        playerReset();
-        arenaSweep();
-        updateScore();
     }
-    dropCounter = 0;
-}
 
-function playerMove(dir) {
-    player.pos.x += dir;
-    if (collide(arena, player)) {
-        player.pos.x -= dir;
-    }
-}
-
-function playerReset() {
-    const pieces = 'ILJOTSZ';
-    if (player.next === null) {
-        player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
-    } else {
-        player.matrix = player.next;
-    }
-    player.next = createPiece(pieces[pieces.length * Math.random() | 0]);
-    player.pos.y = 0;
-    player.pos.x = (arena[0].length / 2 | 0) -
-                   (player.matrix[0].length / 2 | 0);
-    if (collide(arena, player)) {
-        cancelAnimationFrame(animationFrameId);
-        document.body.classList.remove('game-active');
-        gameOverElement.classList.remove('hidden');
-    }
-}
-
-function playerRotate(dir) {
-    const pos = player.pos.x;
-    let offset = 1;
-    rotate(player.matrix, dir);
-    while (collide(arena, player)) {
-        player.pos.x += offset;
-        offset = -(offset + (offset > 0 ? 1 : -1));
-        if (offset > player.matrix[0].length) {
-            rotate(player.matrix, -dir);
-            player.pos.x = pos;
+    function handleCardClick() {
+        if (lockBoard || this.classList.contains('is-flipped')) {
             return;
         }
-    }
-}
 
-function rotate(matrix, dir) {
-    for (let y = 0; y < matrix.length; ++y) {
-        for (let x = 0; x < y; ++x) {
-            [
-                matrix[x][y],
-                matrix[y][x],
-            ] = [
-                matrix[y][x],
-                matrix[x][y],
-            ];
+        this.classList.add('is-flipped');
+        flippedCards.push(this);
+
+        if (flippedCards.length === 2) {
+            incrementMoves();
+            checkForMatch();
         }
     }
 
-    if (dir > 0) {
-        matrix.forEach(row => row.reverse());
-    } else {
-        matrix.reverse();
-    }
-}
-
-let dropCounter = 0;
-let lastTime = 0;
-
-function update(time = 0) {
-    const deltaTime = time - lastTime;
-    lastTime = time;
-
-    dropCounter += deltaTime;
-    if (dropCounter > player.speed) {
-        playerDrop();
+    function incrementMoves() {
+        moves++;
+        movesCountSpan.textContent = moves;
     }
 
-    draw();
-    drawNextPiece();
-    animationFrameId = requestAnimationFrame(update);
-}
+    function checkForMatch() {
+        lockBoard = true;
+        const [card1, card2] = flippedCards;
 
-function updateScore() {
-    scoreElement.innerText = player.score;
-    levelElement.innerText = player.level;
-}
-
-document.addEventListener('keydown', event => {
-    if (event.keyCode === 37) { // Left Arrow
-        playerMove(-1);
-    } else if (event.keyCode === 39) { // Right Arrow
-        playerMove(1);
-    } else if (event.keyCode === 40) { // Down Arrow
-        playerDrop();
-    } else if (event.keyCode === 38) { // Up Arrow
-        playerRotate(1);
-    }
-});
-
-restartButton.addEventListener('click', () => {
-    arena.forEach(row => row.fill(0));
-    player.score = 0;
-    player.level = 0;
-    player.speed = 1000;
-    updateScore();
-    playerReset();
-    document.body.classList.add('game-active');
-    gameOverElement.classList.add('hidden');
-    update();
-});
-
-let touchstartX = 0;
-let touchstartY = 0;
-let touchendX = 0;
-let touchendY = 0;
-
-canvas.addEventListener('touchstart', function(event) {
-    touchstartX = event.changedTouches[0].screenX;
-    touchstartY = event.changedTouches[0].screenY;
-}, false);
-
-canvas.addEventListener('touchend', function(event) {
-    touchendX = event.changedTouches[0].screenX;
-    touchendY = event.changedTouches[0].screenY;
-    handleGesture();
-}, false); 
-
-function handleGesture() {
-    const dx = touchendX - touchstartX;
-    const dy = touchendY - touchstartY;
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-
-    if (absDx > absDy) { // Horizontal swipe
-        if (dx > 0) {
-            playerMove(1);
+        if (card1.dataset.emoji === card2.dataset.emoji) {
+            // Matched
+            card1.classList.add('is-matched');
+            card2.classList.add('is-matched');
+            matchedPairs++;
+            flippedCards = [];
+            lockBoard = false;
+            checkWinCondition();
         } else {
-            playerMove(-1);
-        }
-    } else { // Vertical swipe or tap
-        if (dy > 0) {
-            playerDrop();
-        } else {
-            playerRotate(1);
+            // Not a match
+            setTimeout(() => {
+                card1.classList.remove('is-flipped');
+                card2.classList.remove('is-flipped');
+                flippedCards = [];
+                lockBoard = false;
+            }, 1000);
         }
     }
-}
 
-document.body.classList.add('game-active');
-playerReset();
-updateScore();
-update();
+    function checkWinCondition() {
+        if (matchedPairs === emojis.length) {
+            setTimeout(() => {
+                alert(`Congratulations! You won in ${moves} moves!`);
+            }, 500);
+        }
+    }
+
+    restartBtn.addEventListener('click', createBoard);
+
+    // Initial board creation
+    createBoard();
+});
