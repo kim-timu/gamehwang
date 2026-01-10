@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Game Settings (Hardcoded for Easy level)
     const currentDifficulty = { name: 'Easy', rows: 9, cols: 9, mines: 10 };
-    const nextLevelURL = 'minesweeper02.html'; // Redirect to next level
+    const nextLevelURL = '../../index.html'; // Redirect to main hub after this level
 
     let board = [];
     let gameOver = false;
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timer);
         
         if (isWin) {
-            resultTextEl.textContent = `You cleared Easy level in ${timeElapsed}s!`;
+            resultTextEl.textContent = `You cleared Easy level in ${timeElapsed}s! You've mastered all current Minesweeper levels!`;
             messageEl.classList.remove('hidden');
 
             setTimeout(() => {
