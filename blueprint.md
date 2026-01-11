@@ -20,15 +20,6 @@ The project is organized into subdirectories for each game, with a main `index.h
 │   ├── main03.js
 │   ├── style.css
 │   └── blueprint.md        # Blueprint for the Image Matching Game
-├── minesweeper/
-│   ├── minesweeper01.html  # Minesweeper - Level 1 (Very Easy)
-│   ├── minesweeper02.html  # Minesweeper - Level 2 (Simple)
-│   ├── minesweeper03.html  # Minesweeper - Level 3 (Easy)
-│   ├── main01.js
-│   ├── main02.js
-│   ├── main03.js
-│   ├── style.css
-│   └── blueprint.md        # Blueprint for the Minesweeper Game
 └── number-sequence-puzzle/
     ├── index.html          # Number Sequence Puzzle Game
     ├── style.css
@@ -52,13 +43,7 @@ The project is organized into subdirectories for each game, with a main `index.h
 *   **Starting Point:** `/matching-game/imagemat01.html`
 *   **Details:** See the [Image Matching Game Blueprint](./matching-game/blueprint.md).
 
-### 2. Minesweeper
-
-*   **Description:** A faithful recreation of the classic Minesweeper game with difficulty levels separated into individual HTML files.
-*   **Starting Point:** `/minesweeper/minesweeper01.html`
-*   **Details:** See the [Minesweeper Blueprint](./minesweeper/blueprint.md).
-
-### 3. Number Sequence Puzzle
+### 2. Number Sequence Puzzle
 
 *   **Description:** A sliding tile puzzle where players arrange numbered tiles in sequential order.
 *   **Starting Point:** `/number-sequence-puzzle/index.html`
