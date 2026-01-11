@@ -35,35 +35,37 @@
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4 text-white overflow-hidden">
 
-    <div class="mb-4 text-center w-full max-w-xs">
-        <h1 class="text-3xl font-bold text-red-500 mb-2">CRANE MASTER</h1>
-        
+    <!-- 상단 정보 영역 -->
+    <div class="mb-2 text-center w-full max-w-xs">
         <!-- 난이도 버튼 영역 -->
-        <div class="flex flex-wrap gap-2 justify-center mb-4">
-            <button onclick="setDifficulty('easy')" id="mode-easy" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">이지</button>
-            <button onclick="setDifficulty('normal')" id="mode-normal" class="difficulty-btn active px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">중간</button>
-            <button onclick="setDifficulty('hard')" id="mode-hard" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">어려움</button>
-            <button onclick="setDifficulty('extreme')" id="mode-extreme" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">더 어려움</button>
-            <button onclick="setDifficulty('god')" id="mode-god" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">극강</button>
+        <div class="flex flex-wrap gap-2 justify-center mb-2">
+            <button onclick="setDifficulty('easy')" id="mode-easy" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">이지</button>
+            <button onclick="setDifficulty('normal')" id="mode-normal" class="difficulty-btn active px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">중간</button>
+            <button onclick="setDifficulty('hard')" id="mode-hard" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">어려움</button>
+            <button onclick="setDifficulty('extreme')" id="mode-extreme" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">더 어려움</button>
+            <button onclick="setDifficulty('god')" id="mode-god" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">극강</button>
         </div>
 
-        <!-- 기존 문구 자리로 이동된 점수 및 상태 정보 -->
-        <div class="flex justify-between items-center bg-black/40 p-2 rounded-lg border border-white/10 text-xs">
-            <div class="flex flex-col items-center flex-1 border-r border-white/10">
-                <span class="text-gray-400 mb-1">SCORE</span>
-                <span id="score" class="text-white font-mono text-lg leading-none">0</span>
+        <!-- 점수 및 상태 정보 -->
+        <div class="flex justify-around items-center bg-black/60 py-2 px-3 rounded-xl border border-white/10 text-[11px] font-bold">
+            <div class="flex items-center gap-2">
+                <span class="text-gray-400 uppercase tracking-tighter">Score</span>
+                <span id="score" class="text-white font-mono text-base">0</span>
             </div>
-            <div class="flex flex-col items-center flex-1 border-r border-white/10">
-                <span class="text-gray-400 mb-1">TRIES</span>
-                <span id="tries" class="text-white font-mono text-lg leading-none">0</span>
+            <div class="w-[1px] h-3 bg-white/20"></div>
+            <div class="flex items-center gap-2">
+                <span class="text-gray-400 uppercase tracking-tighter">Tries</span>
+                <span id="tries" class="text-white font-mono text-base">0</span>
             </div>
-            <div class="flex flex-col items-center flex-1">
-                <span class="text-gray-400 mb-1">MARGIN</span>
-                <span id="marginVal" class="text-red-400 font-mono text-lg leading-none">5px</span>
+            <div class="w-[1px] h-3 bg-white/20"></div>
+            <div class="flex items-center gap-2">
+                <span class="text-gray-400 uppercase tracking-tighter">Margin</span>
+                <span id="marginVal" class="text-red-400 font-mono text-base">5px</span>
             </div>
         </div>
     </div>
 
+    <!-- 게임 캔버스 영역 -->
     <div class="relative">
         <canvas id="gameCanvas"></canvas>
         <div id="msgBox" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
@@ -71,12 +73,15 @@
         </div>
     </div>
 
-    <!-- 하단 조작 버튼 -->
-    <div class="mt-6 grid grid-cols-3 gap-4 w-full max-w-xs">
-        <button id="btnLeft" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors">◀</button>
-        <button id="btnDrop" class="bg-red-600 p-4 rounded-xl font-bold active:scale-95 transition-transform">DROP</button>
-        <button id="btnRight" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors">▶</button>
+    <!-- 컨트롤 버튼 -->
+    <div class="mt-4 grid grid-cols-3 gap-4 w-full max-w-xs mb-4">
+        <button id="btnLeft" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors shadow-lg">◀</button>
+        <button id="btnDrop" class="bg-red-600 p-4 rounded-xl font-bold active:scale-95 transition-transform text-sm shadow-lg shadow-red-900/20">DROP</button>
+        <button id="btnRight" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors shadow-lg">▶</button>
     </div>
+
+    <!-- 타이틀 (최하단으로 이동) -->
+    <h1 class="text-3xl font-bold text-red-500 opacity-80 tracking-widest uppercase">CRANE MASTER</h1>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
