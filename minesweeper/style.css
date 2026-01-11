@@ -21,6 +21,7 @@ body {
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
+    font-size: 16px; /* Stabilize base font size for predictable em units */
 }
 
 .game-container {
@@ -87,13 +88,14 @@ body {
 }
 
 .cell {
-    aspect-ratio: 1 / 1; /* Keep cells square */
+    width: 40px; /* Default fixed size */
+    height: 40px; /* Default fixed size */
     background-color: var(--cell-bg);
     border-radius: 3px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5em; /* Further increased default font size */
+    font-size: 1.5em; /* Default font size */
     font-weight: 600;
     color: var(--text-color);
     cursor: pointer;
@@ -143,9 +145,27 @@ body {
     display: none;
 }
 
+@media (max-width: 500px) {
+    .cell {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 380px) {
+    .cell {
+        width: 25px;
+        height: 25px;
+        font-size: 1.0em;
+    }
+}
+
 @media (max-width: 300px) {
     .cell {
-        font-size: 1.3em; /* Adjusted to be larger */
+        width: 20px;
+        height: 20px;
+        font-size: 0.9em;
     }
     .game-container {
         padding: 10px;
