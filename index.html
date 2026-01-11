@@ -2,25 +2,42 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>캔버스 인형 뽑기 - 판정 범위 특화</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #1a1a1a; touch-action: manipulation; }
+        body { 
+            background-color: #1a1a1a; 
+            touch-action: none; /* 전체 스크롤 및 확대 방지 */
+            -webkit-user-select: none; /* iOS 텍스트 선택 방지 */
+            user-select: none; /* 텍스트 선택 방지 */
+        }
         canvas { 
             background: linear-gradient(to bottom, #2c3e50, #000000);
             border: 8px solid #ff4d4d;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
+            touch-action: none;
         }
         .difficulty-btn.active {
             background-color: #ef4444;
             border-color: #ffffff;
             color: white;
         }
+        /* 버튼 길게 누르기 방지 및 햅틱 메뉴 차단 */
+        button {
+            -webkit-touch-callout: none; /* iOS 길게 누를 때 메뉴 팝업 방지 */
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent; /* 터치 시 하이라이트 색상 제거 */
+        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4 text-white">
+<body class="flex flex-col items-center justify-center min-h-screen p-4 text-white overflow-hidden">
 
     <div class="mb-4 text-center">
         <h1 class="text-3xl font-bold text-red-500 mb-2">CRANE MASTER</h1>
@@ -63,7 +80,6 @@
         const msgText = document.getElementById('msgText');
         const descText = document.getElementById('descText');
 
-        // 공통 기본 설정
         const config = {
             width: 360,
             height: 480,
@@ -79,8 +95,6 @@
         function setDifficulty(mode) {
             document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`mode-${mode}`).classList.add('active');
-            
-            // 모든 모드 초기 가이드라인 활성화
             config.showGuide = true;
 
             if (mode === 'easy') {
@@ -96,7 +110,6 @@
                 config.hitboxMargin = 3;  
                 descText.innerText = "극도의 정밀함이 필요합니다 (3px)";
             } else if (mode === 'god') {
-                // 극강 모드 판정 범위를 3px로 설정하고 가이드라인 제거
                 config.hitboxMargin = 3;  
                 config.showGuide = false;
                 descText.innerText = "가이드 없이 신의 감각으로 뽑으세요! (3px)";
@@ -145,11 +158,25 @@
         const btnDrop = document.getElementById('btnDrop');
 
         let touchLeft = false, touchRight = false;
-        btnLeft.onpointerdown = () => touchLeft = true;
+
+        // Context menu 방지 추가
+        const preventDefault = e => e.preventDefault();
+        [btnLeft, btnRight, btnDrop].forEach(btn => {
+            btn.addEventListener('contextmenu', preventDefault);
+        });
+
+        btnLeft.onpointerdown = (e) => { e.preventDefault(); touchLeft = true; };
         btnLeft.onpointerup = () => touchLeft = false;
-        btnRight.onpointerdown = () => touchRight = true;
+        btnLeft.onpointerleave = () => touchLeft = false;
+
+        btnRight.onpointerdown = (e) => { e.preventDefault(); touchRight = true; };
         btnRight.onpointerup = () => touchRight = false;
-        btnDrop.onclick = () => { if(gameState === 'idle') startDrop(); };
+        btnRight.onpointerleave = () => touchRight = false;
+
+        btnDrop.onpointerdown = (e) => { 
+            e.preventDefault();
+            if(gameState === 'idle') startDrop(); 
+        };
 
         function startDrop() {
             gameState = 'dropping';
@@ -238,7 +265,6 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 가이드라인 (설정된 경우에만 그림)
             if (config.showGuide) {
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'; 
                 ctx.setLineDash([5, 5]);
