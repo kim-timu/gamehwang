@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>캔버스 인형 뽑기 - 판정 범위 특화</title>
+    <title>인형 뽑기 게임 - 스테이지 클리어 방식</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { 
@@ -37,13 +37,13 @@
 
     <!-- 상단 정보 영역 -->
     <div class="mb-2 text-center w-full max-w-xs">
-        <!-- 난이도 버튼 영역 -->
+        <!-- 난이도 표시 영역 -->
         <div class="flex flex-wrap gap-2 justify-center mb-2">
-            <button onclick="setDifficulty('easy')" id="mode-easy" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">이지</button>
-            <button onclick="setDifficulty('normal')" id="mode-normal" class="difficulty-btn active px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">중간</button>
-            <button onclick="setDifficulty('hard')" id="mode-hard" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">어려움</button>
-            <button onclick="setDifficulty('extreme')" id="mode-extreme" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">더 어려움</button>
-            <button onclick="setDifficulty('god')" id="mode-god" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all">극강</button>
+            <button id="mode-easy" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all pointer-events-none">이지</button>
+            <button id="mode-normal" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all pointer-events-none">중간</button>
+            <button id="mode-hard" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all pointer-events-none">어려움</button>
+            <button id="mode-extreme" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all pointer-events-none">더 어려움</button>
+            <button id="mode-god" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-[10px] transition-all pointer-events-none">극강</button>
         </div>
 
         <!-- 점수 및 상태 정보 -->
@@ -54,13 +54,13 @@
             </div>
             <div class="w-[1px] h-3 bg-white/20"></div>
             <div class="flex items-center gap-2">
-                <span class="text-gray-400 uppercase tracking-tighter">Tries</span>
-                <span id="tries" class="text-white font-mono text-base">0</span>
+                <span class="text-gray-400 uppercase tracking-tighter">Remain</span>
+                <span id="remain" class="text-yellow-400 font-mono text-base">6</span>
             </div>
             <div class="w-[1px] h-3 bg-white/20"></div>
             <div class="flex items-center gap-2">
                 <span class="text-gray-400 uppercase tracking-tighter">Margin</span>
-                <span id="marginVal" class="text-red-400 font-mono text-base">5px</span>
+                <span id="marginVal" class="text-red-400 font-mono text-base">6px</span>
             </div>
         </div>
     </div>
@@ -68,8 +68,8 @@
     <!-- 게임 캔버스 영역 -->
     <div class="relative">
         <canvas id="gameCanvas"></canvas>
-        <div id="msgBox" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
-            <div id="msgText" class="bg-white text-black px-6 py-3 rounded-full font-bold shadow-lg text-xl">성공! 🎉</div>
+        <div id="msgBox" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 z-10">
+            <div id="msgText" class="bg-white text-black px-6 py-3 rounded-2xl font-bold shadow-lg text-xl text-center"></div>
         </div>
     </div>
 
@@ -80,14 +80,14 @@
         <button id="btnRight" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors shadow-lg">▶</button>
     </div>
 
-    <!-- 타이틀 (최하단으로 이동) -->
+    <!-- 타이틀 -->
     <h1 class="text-3xl font-bold text-red-500 opacity-80 tracking-widest uppercase">CRANE MASTER</h1>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('score');
-        const triesEl = document.getElementById('tries');
+        const remainEl = document.getElementById('remain');
         const marginValEl = document.getElementById('marginVal');
         const msgBox = document.getElementById('msgBox');
         const msgText = document.getElementById('msgText');
@@ -97,20 +97,27 @@
             height: 480,
             clawSpeed: 2.5,
             dropSpeed: 5,
-            dollCount: 8,
+            dollCount: 6, 
             colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF9F43', '#A29BFE'],
             dollRadius: 18,
             showGuide: true,
-            hitboxMargin: 5
+            hitboxMargin: 6,
+            currentDifficulty: 'easy'
         };
 
-        function setDifficulty(mode) {
+        const difficultyOrder = ['easy', 'normal', 'hard', 'extreme', 'god'];
+
+        function setDifficulty(mode, silent = false) {
+            config.currentDifficulty = mode;
             document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`mode-${mode}`).classList.add('active');
+            const targetBtn = document.getElementById('mode-' + mode);
+            if (targetBtn) targetBtn.classList.add('active');
+            
+            // 기본적으로 가이드라인은 켬
             config.showGuide = true;
 
             if (mode === 'easy') {
-                config.hitboxMargin = 20; 
+                config.hitboxMargin = 6; 
             } else if (mode === 'normal') {
                 config.hitboxMargin = 5;  
             } else if (mode === 'hard') {
@@ -119,18 +126,38 @@
                 config.hitboxMargin = 3;  
             } else if (mode === 'god') {
                 config.hitboxMargin = 3;  
-                config.showGuide = false;
+                config.showGuide = false; // 극강 모드에서 가이드라인 제거
             }
             
             marginValEl.innerText = config.hitboxMargin + "px";
-            initDolls(); 
+            
+            if (!silent) {
+                initDolls();
+            }
+        }
+
+        function checkStageClear() {
+            if (dolls.length === 0) {
+                const currentIndex = difficultyOrder.indexOf(config.currentDifficulty);
+                if (currentIndex < difficultyOrder.length - 1) {
+                    const nextMode = difficultyOrder[currentIndex + 1];
+                    setTimeout(() => {
+                        setDifficulty(nextMode);
+                        const msg = "STAGE CLEAR! 🌟<br><span class='text-sm font-normal'>" + nextMode.toUpperCase() + " 난이도로 상승!</span>";
+                        showMessage(msg, true);
+                    }, 500);
+                } else {
+                    const msg = "ALL CLEAR! 🏆<br><span class='text-sm font-normal'>당신은 진정한 뽑기 왕입니다!</span>";
+                    showMessage(msg, true);
+                    setTimeout(initDolls, 2000);
+                }
+            }
         }
 
         canvas.width = config.width;
         canvas.height = config.height;
 
         let score = 0;
-        let tries = 0;
         let gameState = 'idle'; 
         
         const claw = {
@@ -147,13 +174,14 @@
             dolls = [];
             for (let i = 0; i < config.dollCount; i++) {
                 dolls.push({
-                    x: 60 + Math.random() * (config.width - 120),
+                    x: 50 + Math.random() * (config.width - 100),
                     y: config.height - 35,
                     radius: config.dollRadius,
                     color: config.colors[Math.floor(Math.random() * config.colors.length)],
-                    emoji: ['🧸', '🐶', '🐱', '🦊', '🐰'][Math.floor(Math.random() * 5)]
+                    emoji: ['🧸', '🐶', '🐱', '🦊', '🐰', '🐼'][Math.floor(Math.random() * 6)]
                 });
             }
+            remainEl.innerText = dolls.length;
         }
 
         const keys = {};
@@ -186,8 +214,6 @@
 
         function startDrop() {
             gameState = 'dropping';
-            tries++;
-            triesEl.innerText = tries;
         }
 
         function update() {
@@ -226,12 +252,15 @@
                     if (claw.grabbedDoll) {
                         score++;
                         scoreEl.innerText = score;
-                        showMessage("성공! 🎉", true);
+                        
                         dolls = dolls.filter(d => d !== claw.grabbedDoll);
+                        remainEl.innerText = dolls.length;
                         claw.grabbedDoll = null;
-                        if(dolls.length === 0) setTimeout(initDolls, 1000); 
+                        
+                        showMessage("GET! 🎯", true);
+                        checkStageClear();
                     } else {
-                        showMessage("실패! 💨", false);
+                        showMessage("MISS! 💨", false);
                     }
                     gameState = 'idle';
                 }
@@ -259,18 +288,19 @@
             claw.grabbedDoll = closestDoll;
         }
 
-        function showMessage(text, isSuccess) {
-            msgText.innerText = text;
+        function showMessage(htmlContent, isSuccess) {
+            msgText.innerHTML = htmlContent;
             msgText.className = isSuccess 
-                ? "bg-white text-black px-6 py-3 rounded-full font-bold shadow-lg text-xl"
-                : "bg-gray-800 text-white px-6 py-3 rounded-full font-bold shadow-lg text-xl";
+                ? "bg-white text-black px-6 py-3 rounded-2xl font-bold shadow-lg text-xl text-center"
+                : "bg-gray-800 text-white px-6 py-3 rounded-2xl font-bold shadow-lg text-xl text-center";
             msgBox.style.opacity = '1';
-            setTimeout(() => msgBox.style.opacity = '0', 1000);
+            setTimeout(() => { msgBox.style.opacity = '0'; }, 1500);
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // 가이드 라인
             if (config.showGuide) {
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'; 
                 ctx.setLineDash([5, 5]);
@@ -281,9 +311,13 @@
                 ctx.setLineDash([]);
             }
 
+            // 배출구 표시
             ctx.fillStyle = '#111';
             ctx.fillRect(10, config.height - 30, 60, 30);
+            ctx.strokeStyle = '#444';
+            ctx.strokeRect(10, config.height - 30, 60, 30);
 
+            // 로프
             ctx.strokeStyle = '#888';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
@@ -291,26 +325,29 @@
             ctx.lineTo(claw.x, claw.y + claw.ropeLen);
             ctx.stroke();
 
+            // 인형들
             dolls.forEach(doll => {
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(doll.x, doll.y, doll.radius, 0, Math.PI * 2);
                 ctx.fillStyle = doll.color;
                 ctx.fill();
-                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 1;
                 ctx.stroke();
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.font = `${doll.radius * 1.2}px Arial`;
+                ctx.font = doll.radius * 1.2 + "px Arial";
                 ctx.fillText(doll.emoji, doll.x, doll.y);
                 ctx.restore();
             });
 
+            // 크레인 머리
             const headSize = 30;
             ctx.fillStyle = '#aaa';
             ctx.fillRect(claw.x - headSize/2, claw.y + claw.ropeLen, headSize, 8);
             
+            // 크레인 집게 팔
             const isOpening = (gameState === 'dropping');
             const armAngle = isOpening ? 0.4 : (claw.grabbedDoll ? 0.1 : 0.3);
             
@@ -318,6 +355,7 @@
             ctx.lineWidth = 4;
             ctx.lineCap = 'round';
             
+            // 왼쪽 팔
             ctx.beginPath();
             ctx.moveTo(claw.x - 10, claw.y + claw.ropeLen + 5);
             ctx.quadraticCurveTo(
@@ -326,6 +364,7 @@
             );
             ctx.stroke();
 
+            // 오른쪽 팔
             ctx.beginPath();
             ctx.moveTo(claw.x + 10, claw.y + claw.ropeLen + 5);
             ctx.quadraticCurveTo(
@@ -341,8 +380,10 @@
             requestAnimationFrame(loop);
         }
 
-        setDifficulty('normal'); 
-        loop();
+        window.onload = function() {
+            setDifficulty('easy'); 
+            loop();
+        };
     </script>
 </body>
 </html>
