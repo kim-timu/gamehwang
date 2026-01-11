@@ -3,90 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACD Games Hub</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .hub-container {
-            background: #ffffff;
-            padding: 40px 60px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-        .game-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .game-link {
-            display: block;
-            padding: 20px 40px;
-            background: #007bff;
-            color: white;
-            text-decoration: none;
-            font-size: 1.2em;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-        }
-        .game-link:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4);
-        }
-        .game-link.number-puzzle {
-            background: #ffc107; /* A distinct color for the new game */
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-        }
-        .game-link.number-puzzle:hover {
-            box-shadow: 0 10px 20px rgba(255, 193, 7, 0.4);
-        }
-    </style>
+    <title>Hello, World!</title>
 </head>
 <body>
-    <div class="hub-container">
-        <h1>Puzzle Games</h1>
-        <div class="test-mode-toggle" style="margin-bottom: 20px;">
-            <input type="checkbox" id="test-mode-checkbox">
-            <label for="test-mode-checkbox">Test Mode</label>
-        </div>
-        <div class="game-list">
-            <a href="matching-game/imagemat01.html" class="game-link">Image Matching</a>
-            <a href="number-sequence-puzzle/numberpuzzle01.html" class="game-link number-puzzle">Number Sequence</a>
-        </div>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const testModeCheckbox = document.getElementById('test-mode-checkbox');
-            const TEST_MODE_KEY = 'acdgames_test_mode';
-
-            // Load state from localStorage
-            const savedState = localStorage.getItem(TEST_MODE_KEY);
-            if (savedState === 'true') {
-                testModeCheckbox.checked = true;
-            } else {
-                testModeCheckbox.checked = false;
-            }
-
-            // Save state to localStorage on change
-            testModeCheckbox.addEventListener('change', () => {
-                localStorage.setItem(TEST_MODE_KEY, testModeCheckbox.checked);
-            });
-        });
-    </script>
+    <h1>Hello, World!</h1>
 </body>
 </html>
