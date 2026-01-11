@@ -6,15 +6,16 @@ A Minesweeper-style puzzle game where the player searches for hidden bananas. Th
 
 ## Design and Style
 
-*   **Layout:** A compact layout featuring game controls (restart) and game info (banana count, timer) above the main game board. The game board cells are responsive, adapting their size to fit the grid dimensions and screen size.
-*   **Theme:** A clean, functional, and minimal flat design with a fun, tropical aesthetic.
+*   **Layout:** A compact layout featuring game controls (restart) and game info (banana count, timer) above the main game board. The game board cells are responsive, adapting their size to fit the grid dimensions and screen size. The header has a flexible layout to accommodate controls and information.
+*   **Theme:** Adapted to Image Matching game's UI style, featuring a clean and modern aesthetic with subtle shadows for depth.
 *   **Color Palette:**
     *   Background: Light gray (`#f0f2f5`).
-    *   Cells: Off-white (`#e9ecef`) and white (`#fff`) for revealed cells.
-    *   Borders: Light gray (`#ccc`).
+    *   Containers/Cells: White (`#ffffff`).
+    *   Text: Dark gray (`#333`).
+    *   Primary Buttons/Accents: Blue (`#007bff`).
+    *   Shadows: Subtle gray (`rgba(0, 0, 0, 0.1)`).
     *   Bananas: Yellow (`#ffca28`).
     *   Monkey Markers: Brown (`#6d4c41`).
-    *   Primary Button: Blue (`#007bff`).
 *   **Typography:** Clean, sans-serif font (Poppins).
 
 ## Global Features
@@ -45,7 +46,7 @@ A Minesweeper-style puzzle game where the player searches for hidden bananas. Th
 ## Development Plan
 
 1.  **[Completed]** **Structure (`bananahuntXX.html`):** Create the main HTML structure for each level's game board, controls, and info panel.
-2.  **[Completed]** **Styling (`style.css`):** Implement the full visual design, including the simple/flat theme, responsive cell styles, and banana/monkey icons.
+2.  **[Completed]** **Styling (`style.css`):** Implement the full visual design, adapting to Image Matching game's UI style, including responsive cell styles, and banana/monkey icons.
 3.  **[Completed]** **Core Logic (`mainXX.js`):**
     *   Implement board generation and level-specific difficulty settings.
     *   Implement banana placement with first-click safety.

@@ -2,14 +2,14 @@
 
 :root {
     --bg-color: #f0f2f5;
-    --border-color: #ccc;
-    --cell-bg: #e9ecef;
-    --cell-revealed-bg: #fff;
+    --card-bg: #ffffff; /* Consistent with Image Matching */
+    --primary-color: #007bff; /* Consistent with Image Matching */
+    --primary-hover: #0056b3; /* Consistent with Image Matching */
     --text-color: #333;
+    --shadow-color: rgba(0, 0, 0, 0.1); /* Consistent with Image Matching */
+
     --banana-color: #ffca28; /* Yellow for bananas */
     --monkey-marker-color: #6d4c41; /* Brown for monkey markers */
-    --primary-btn-bg: #007bff;
-    --primary-btn-hover: #0056b3;
 }
 
 body {
@@ -21,21 +21,26 @@ body {
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
-    font-size: 16px; /* Stabilize base font size for predictable em units */
 }
 
 .game-container {
-    background: var(--cell-revealed-bg);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+    background: var(--card-bg); /* Use card-bg for consistency */
+    border-radius: 15px; /* Larger radius like Image Matching */
+    border: none; /* Remove border, rely on shadow */
     padding: 20px;
-    max-width: min(900px, 90vw); /* Increased responsive max-width */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    max-width: min(600px, 90vw); /* Image Matching default max-width */
+    box-shadow: 0 10px 30px var(--shadow-color); /* Image Matching shadow */
 }
 
 .game-header {
+    display: flex; /* Image Matching style */
+    justify-content: space-between; /* Image Matching style */
+    align-items: center; /* Image Matching style */
+    flex-wrap: wrap; /* Image Matching style */
+    gap: 10px; /* Image Matching style */
     margin-bottom: 20px;
-    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--bg-color);
 }
 
 .game-header h1 {
@@ -58,60 +63,65 @@ body {
 }
 
 .game-info {
-    justify-content: center;
+    display: flex; /* Image Matching style */
+    align-items: center; /* Image Matching style */
+    gap: 20px; /* Image Matching style */
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-color);
 }
 
-#restart-btn, #pass-btn {
-    padding: 8px 15px;
-    font-family: 'Poppins', sans-serif;
+#restart-btn, #pass-btn { /* Apply to both restart and pass buttons */
+    padding: 10px 20px; /* Image Matching style */
+    font-size: 1em; /* Image Matching style */
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--primary-color);
     border: none;
-    border-radius: 5px;
-    background: var(--primary-btn-bg);
-    color: white;
+    border-radius: 8px; /* Image Matching style */
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.3s, box-shadow 0.3s; /* Image Matching style */
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2); /* Image Matching style */
 }
 
-#restart-btn:hover, #pass-btn:hover {
-    background-color: var(--primary-btn-hover);
+#restart-btn:hover, #pass-btn:hover { /* Apply to both restart and pass buttons */
+    background-color: var(--primary-hover);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3); /* Image Matching style */
 }
 
 .game-board {
     display: grid;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    padding: 2px;
-    gap: 1px;
-    background-color: var(--border-color);
-    width: 100%; /* Make game board fill container */
-    max-width: 100%; /* Ensure it doesn't overflow its container */
+    gap: 15px; /* Image Matching style */
+    margin: 0 auto;
+    /* Remove border, padding, background-color for flat aesthetic */
+    /* width and max-width will be controlled by game-container */
+    perspective: 1000px; /* For potential 3D effects */
 }
 
 .cell {
-    width: 40px; /* Default fixed size */
-    height: 40px; /* Default fixed size */
+    /* width and height will be determined by grid-template-columns */
     aspect-ratio: 1 / 1; /* Keep cells square */
-    background-color: var(--cell-bg);
-    border-radius: 3px;
+    background-color: var(--card-bg); /* Image Matching style */
+    border-radius: 10px; /* Image Matching style */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5em; /* Default font size */
+    font-size: 2.5em; /* Image Matching style */
     font-weight: 600;
     color: var(--text-color);
     cursor: pointer;
-    transition: background-color 0.1s linear;
-    border: 1px solid rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out, background-color 0.2s; /* Image Matching style */
+    border: none; /* Remove border, rely on shadow */
+    box-shadow: 0 4px 8px var(--shadow-color); /* Image Matching style */
 }
 
 .cell:hover {
-    background-color: #e0e5ec;
+    filter: brightness(1.05); /* Image Matching style */
 }
 
 .cell.revealed {
-    background-color: var(--cell-revealed-bg);
     cursor: default;
-    border: 1px solid var(--border-color);
 }
 
 .cell.banana { /* Style for revealed banana */
@@ -137,45 +147,41 @@ body {
     text-align: center;
     padding: 15px;
     margin-top: 20px;
-    border-radius: 5px;
-    background: var(--cell-bg);
-    border: 1px solid var(--border-color);
+    border-radius: 10px; /* Image Matching style */
+    background: var(--card-bg); /* Image Matching style */
+    border: none; /* Remove border */
+    box-shadow: 0 4px 8px var(--shadow-color); /* Image Matching style */
 }
 
 .hidden {
     display: none;
 }
 
-@media (max-width: 500px) {
-    .cell {
-        width: 30px;
-        height: 30px;
-        font-size: 1.2em;
-    }
-}
-
-@media (max-width: 380px) {
-    .cell {
-        width: 25px;
-        height: 25px;
-        font-size: 1.0em;
-    }
-}
-
-@media (max-width: 300px) {
-    .cell {
-        width: 20px;
-        height: 20px;
-        font-size: 0.9em;
-    }
-    .game-container {
-        padding: 10px;
-    }
+@media (max-width: 640px) {
     .game-header h1 {
-        font-size: 1.0em;
+        font-size: 1.0em; /* Adjusted to be less prominent */
     }
-    .game-controls, .game-info {
+    .game-board {
         gap: 10px;
-        padding: 5px;
+    }
+    .cell {
+        font-size: 2em; /* Adjusted for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 15px;
+    }
+    .game-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    .game-info {
+        justify-content: space-between;
+    }
+    .cell {
+        font-size: 1.5em; /* Adjusted for very small screens */
     }
 }
