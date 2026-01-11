@@ -25,7 +25,7 @@ body {
 
 .game-container {
     width: 100%;
-    max-width: 600px;
+    max-width: min(900px, 98vw); /* Allow game to expand more */
     background: var(--card-bg);
     border-radius: 15px;
     box-shadow: 0 10px 30px var(--shadow-color);
@@ -144,9 +144,7 @@ body {
 .game-board.grid-8 {
     gap: 8px;
 }
-.game-container.grid-8-container {
-    max-width: 700px; /* Allow slightly larger container for 8x8 */
-}
+
 .game-board.grid-8 .card-face {
     font-size: 1.5em;
 }

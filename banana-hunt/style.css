@@ -28,7 +28,7 @@ body {
     border-radius: 15px; /* Larger radius like Image Matching */
     border: none; /* Remove border, rely on shadow */
     padding: 20px;
-    max-width: min(600px, 90vw); /* Image Matching default max-width */
+    max-width: min(900px, 98vw); /* Increased responsive max-width */
     box-shadow: 0 10px 30px var(--shadow-color); /* Image Matching shadow */
 }
 

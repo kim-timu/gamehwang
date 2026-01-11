@@ -26,7 +26,7 @@ body {
 
 .game-container {
     width: 100%;
-    max-width: min(500px, 90vw); /* Ensure it doesn't get too wide on very large screens, but uses 90vw on smaller */
+    max-width: min(900px, 98vw); /* Allow game to expand more */
     background: var(--card-bg);
     border-radius: 15px;
     box-shadow: 0 10px 30px var(--shadow-color);
