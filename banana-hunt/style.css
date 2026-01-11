@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --bg-color: #f0f2f5;
+    --border-color: #ccc;
+    --cell-bg: #e9ecef;
+    --cell-revealed-bg: #fff;
+    --text-color: #333;
+    --banana-color: #ffca28; /* Yellow for bananas */
+    --monkey-marker-color: #6d4c41; /* Brown for monkey markers */
+    --primary-btn-bg: #007bff;
+    --primary-btn-hover: #0056b3;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    font-size: 16px; /* Stabilize base font size for predictable em units */
+}
+
+.game-container {
+    background: var(--cell-revealed-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    max-width: min(900px, 90vw); /* Increased responsive max-width */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+.game-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.game-header h1 {
+    font-size: 1.2em; /* Adjusted to prevent wrapping */
+    color: var(--text-color);
+    margin: 0 0 20px 0;
+}
+
+.game-controls, .game-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    background: var(--cell-bg);
+    border: 1px solid var(--border-color);
+}
+
+.game-info {
+    justify-content: center;
+}
+
+#restart-btn, #pass-btn {
+    padding: 8px 15px;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    border-radius: 5px;
+    background: var(--primary-btn-bg);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#restart-btn:hover, #pass-btn:hover {
+    background-color: var(--primary-btn-hover);
+}
+
+.game-board {
+    display: grid;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 2px;
+    gap: 1px;
+    background-color: var(--border-color);
+    width: 100%; /* Make game board fill container */
+    max-width: 100%; /* Ensure it doesn't overflow its container */
+}
+
+.cell {
+    width: 40px; /* Default fixed size */
+    height: 40px; /* Default fixed size */
+    aspect-ratio: 1 / 1; /* Keep cells square */
+    background-color: var(--cell-bg);
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em; /* Default font size */
+    font-weight: 600;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.1s linear;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.cell:hover {
+    background-color: #e0e5ec;
+}
+
+.cell.revealed {
+    background-color: var(--cell-revealed-bg);
+    cursor: default;
+    border: 1px solid var(--border-color);
+}
+
+.cell.banana { /* Style for revealed banana */
+    background-color: var(--banana-color);
+    color: white;
+}
+
+.cell.monkey-marked { /* Style for monkey marker */
+    color: var(--monkey-marker-color);
+}
+
+/* Number colors for revealed cells (adjusted for visibility) */
+.c1 { color: #007bff; }
+.c2 { color: #28a745; }
+.c3 { color: #dc3545; }
+.c4 { color: #17a2b8; }
+.c5 { color: #ffc107; }
+.c6 { color: #fd7e14; }
+.c7 { color: #6610f2; }
+.c8 { color: #343a40; }
+
+#game-over-message {
+    text-align: center;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background: var(--cell-bg);
+    border: 1px solid var(--border-color);
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 500px) {
+    .cell {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 380px) {
+    .cell {
+        width: 25px;
+        height: 25px;
+        font-size: 1.0em;
+    }
+}
+
+@media (max-width: 300px) {
+    .cell {
+        width: 20px;
+        height: 20px;
+        font-size: 0.9em;
+    }
+    .game-container {
+        padding: 10px;
+    }
+    .game-header h1 {
+        font-size: 1.0em;
+    }
+    .game-controls, .game-info {
+        gap: 10px;
+        padding: 5px;
+    }
+}
