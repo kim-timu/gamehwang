@@ -8,9 +8,9 @@
     <style>
         body { 
             background-color: #1a1a1a; 
-            touch-action: none; /* 전체 스크롤 및 확대 방지 */
-            -webkit-user-select: none; /* iOS 텍스트 선택 방지 */
-            user-select: none; /* 텍스트 선택 방지 */
+            touch-action: none; 
+            -webkit-user-select: none; 
+            user-select: none; 
         }
         canvas { 
             background: linear-gradient(to bottom, #2c3e50, #000000);
@@ -24,31 +24,44 @@
             border-color: #ffffff;
             color: white;
         }
-        /* 버튼 길게 누르기 방지 및 햅틱 메뉴 차단 */
         button {
-            -webkit-touch-callout: none; /* iOS 길게 누를 때 메뉴 팝업 방지 */
+            -webkit-touch-callout: none;
             -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
             outline: none;
-            -webkit-tap-highlight-color: transparent; /* 터치 시 하이라이트 색상 제거 */
+            -webkit-tap-highlight-color: transparent;
         }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4 text-white overflow-hidden">
 
-    <div class="mb-4 text-center">
+    <div class="mb-4 text-center w-full max-w-xs">
         <h1 class="text-3xl font-bold text-red-500 mb-2">CRANE MASTER</h1>
-        <div class="flex flex-wrap gap-2 justify-center mb-2">
+        
+        <!-- 난이도 버튼 영역 -->
+        <div class="flex flex-wrap gap-2 justify-center mb-4">
             <button onclick="setDifficulty('easy')" id="mode-easy" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">이지</button>
             <button onclick="setDifficulty('normal')" id="mode-normal" class="difficulty-btn active px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">중간</button>
             <button onclick="setDifficulty('hard')" id="mode-hard" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">어려움</button>
             <button onclick="setDifficulty('extreme')" id="mode-extreme" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">더 어려움</button>
             <button onclick="setDifficulty('god')" id="mode-god" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">극강</button>
         </div>
-        <p id="descText" class="text-xs text-gray-400">오직 판정 범위만 달라집니다!</p>
+
+        <!-- 기존 문구 자리로 이동된 점수 및 상태 정보 -->
+        <div class="flex justify-between items-center bg-black/40 p-2 rounded-lg border border-white/10 text-xs">
+            <div class="flex flex-col items-center flex-1 border-r border-white/10">
+                <span class="text-gray-400 mb-1">SCORE</span>
+                <span id="score" class="text-white font-mono text-lg leading-none">0</span>
+            </div>
+            <div class="flex flex-col items-center flex-1 border-r border-white/10">
+                <span class="text-gray-400 mb-1">TRIES</span>
+                <span id="tries" class="text-white font-mono text-lg leading-none">0</span>
+            </div>
+            <div class="flex flex-col items-center flex-1">
+                <span class="text-gray-400 mb-1">MARGIN</span>
+                <span id="marginVal" class="text-red-400 font-mono text-lg leading-none">5px</span>
+            </div>
+        </div>
     </div>
 
     <div class="relative">
@@ -58,16 +71,11 @@
         </div>
     </div>
 
+    <!-- 하단 조작 버튼 -->
     <div class="mt-6 grid grid-cols-3 gap-4 w-full max-w-xs">
         <button id="btnLeft" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors">◀</button>
         <button id="btnDrop" class="bg-red-600 p-4 rounded-xl font-bold active:scale-95 transition-transform">DROP</button>
         <button id="btnRight" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors">▶</button>
-    </div>
-
-    <div class="mt-4 flex gap-6 text-gray-500 text-xs">
-        <div>Score: <span id="score" class="text-white font-mono text-lg">0</span></div>
-        <div>Tries: <span id="tries" class="text-white font-mono text-lg">0</span></div>
-        <div>Margin: <span id="marginVal" class="text-red-400 font-mono text-lg">5px</span></div>
     </div>
 
     <script>
@@ -78,7 +86,6 @@
         const marginValEl = document.getElementById('marginVal');
         const msgBox = document.getElementById('msgBox');
         const msgText = document.getElementById('msgText');
-        const descText = document.getElementById('descText');
 
         const config = {
             width: 360,
@@ -99,20 +106,15 @@
 
             if (mode === 'easy') {
                 config.hitboxMargin = 20; 
-                descText.innerText = "판정 범위가 매우 넓습니다 (20px)";
             } else if (mode === 'normal') {
                 config.hitboxMargin = 5;  
-                descText.innerText = "표준적인 판정 범위입니다 (5px)";
             } else if (mode === 'hard') {
                 config.hitboxMargin = 4;  
-                descText.innerText = "정교한 조준이 필요한 범위입니다 (4px)";
             } else if (mode === 'extreme') {
                 config.hitboxMargin = 3;  
-                descText.innerText = "극도의 정밀함이 필요합니다 (3px)";
             } else if (mode === 'god') {
                 config.hitboxMargin = 3;  
                 config.showGuide = false;
-                descText.innerText = "가이드 없이 신의 감각으로 뽑으세요! (3px)";
             }
             
             marginValEl.innerText = config.hitboxMargin + "px";
@@ -159,7 +161,6 @@
 
         let touchLeft = false, touchRight = false;
 
-        // Context menu 방지 추가
         const preventDefault = e => e.preventDefault();
         [btnLeft, btnRight, btnDrop].forEach(btn => {
             btn.addEventListener('contextmenu', preventDefault);
