@@ -1,11 +1,316 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello, World!</title>
+    <title>캔버스 인형 뽑기 - 판정 범위 특화</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #1a1a1a; touch-action: manipulation; }
+        canvas { 
+            background: linear-gradient(to bottom, #2c3e50, #000000);
+            border: 8px solid #ff4d4d;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
+        }
+        .difficulty-btn.active {
+            background-color: #ef4444;
+            border-color: #ffffff;
+            color: white;
+        }
+    </style>
 </head>
-<body>
-    <h1>Hello, World!</h1>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 text-white">
+
+    <div class="mb-4 text-center">
+        <h1 class="text-3xl font-bold text-red-500 mb-2">CRANE MASTER</h1>
+        <div class="flex flex-wrap gap-2 justify-center mb-2">
+            <button onclick="setDifficulty('easy')" id="mode-easy" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">이지</button>
+            <button onclick="setDifficulty('normal')" id="mode-normal" class="difficulty-btn active px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">중간</button>
+            <button onclick="setDifficulty('hard')" id="mode-hard" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">어려움</button>
+            <button onclick="setDifficulty('extreme')" id="mode-extreme" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">더 어려움</button>
+            <button onclick="setDifficulty('god')" id="mode-god" class="difficulty-btn px-2 py-1 rounded bg-gray-700 border border-transparent text-xs transition-all">극강</button>
+        </div>
+        <p id="descText" class="text-xs text-gray-400">오직 판정 범위만 달라집니다!</p>
+    </div>
+
+    <div class="relative">
+        <canvas id="gameCanvas"></canvas>
+        <div id="msgBox" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+            <div id="msgText" class="bg-white text-black px-6 py-3 rounded-full font-bold shadow-lg text-xl">성공! 🎉</div>
+        </div>
+    </div>
+
+    <div class="mt-6 grid grid-cols-3 gap-4 w-full max-w-xs">
+        <button id="btnLeft" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors">◀</button>
+        <button id="btnDrop" class="bg-red-600 p-4 rounded-xl font-bold active:scale-95 transition-transform">DROP</button>
+        <button id="btnRight" class="bg-gray-700 p-4 rounded-xl active:bg-red-500 transition-colors">▶</button>
+    </div>
+
+    <div class="mt-4 flex gap-6 text-gray-500 text-xs">
+        <div>Score: <span id="score" class="text-white font-mono text-lg">0</span></div>
+        <div>Tries: <span id="tries" class="text-white font-mono text-lg">0</span></div>
+        <div>Margin: <span id="marginVal" class="text-red-400 font-mono text-lg">5px</span></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const triesEl = document.getElementById('tries');
+        const marginValEl = document.getElementById('marginVal');
+        const msgBox = document.getElementById('msgBox');
+        const msgText = document.getElementById('msgText');
+        const descText = document.getElementById('descText');
+
+        // 공통 기본 설정
+        const config = {
+            width: 360,
+            height: 480,
+            clawSpeed: 2.5,
+            dropSpeed: 5,
+            dollCount: 8,
+            colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF9F43', '#A29BFE'],
+            dollRadius: 18,
+            showGuide: true,
+            hitboxMargin: 5
+        };
+
+        function setDifficulty(mode) {
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`mode-${mode}`).classList.add('active');
+            
+            // 모든 모드 초기 가이드라인 활성화
+            config.showGuide = true;
+
+            if (mode === 'easy') {
+                config.hitboxMargin = 20; 
+                descText.innerText = "판정 범위가 매우 넓습니다 (20px)";
+            } else if (mode === 'normal') {
+                config.hitboxMargin = 5;  
+                descText.innerText = "표준적인 판정 범위입니다 (5px)";
+            } else if (mode === 'hard') {
+                config.hitboxMargin = 4;  
+                descText.innerText = "정교한 조준이 필요한 범위입니다 (4px)";
+            } else if (mode === 'extreme') {
+                config.hitboxMargin = 3;  
+                descText.innerText = "극도의 정밀함이 필요합니다 (3px)";
+            } else if (mode === 'god') {
+                // 극강 모드 판정 범위를 3px로 설정하고 가이드라인 제거
+                config.hitboxMargin = 3;  
+                config.showGuide = false;
+                descText.innerText = "가이드 없이 신의 감각으로 뽑으세요! (3px)";
+            }
+            
+            marginValEl.innerText = config.hitboxMargin + "px";
+            initDolls(); 
+        }
+
+        canvas.width = config.width;
+        canvas.height = config.height;
+
+        let score = 0;
+        let tries = 0;
+        let gameState = 'idle'; 
+        
+        const claw = {
+            x: config.width / 2,
+            y: 50,
+            ropeLen: 50,
+            maxRopeLen: 395,
+            grabbedDoll: null
+        };
+
+        let dolls = [];
+
+        function initDolls() {
+            dolls = [];
+            for (let i = 0; i < config.dollCount; i++) {
+                dolls.push({
+                    x: 60 + Math.random() * (config.width - 120),
+                    y: config.height - 35,
+                    radius: config.dollRadius,
+                    color: config.colors[Math.floor(Math.random() * config.colors.length)],
+                    emoji: ['🧸', '🐶', '🐱', '🦊', '🐰'][Math.floor(Math.random() * 5)]
+                });
+            }
+        }
+
+        const keys = {};
+        window.addEventListener('keydown', e => keys[e.code] = true);
+        window.addEventListener('keyup', e => keys[e.code] = false);
+
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+        const btnDrop = document.getElementById('btnDrop');
+
+        let touchLeft = false, touchRight = false;
+        btnLeft.onpointerdown = () => touchLeft = true;
+        btnLeft.onpointerup = () => touchLeft = false;
+        btnRight.onpointerdown = () => touchRight = true;
+        btnRight.onpointerup = () => touchRight = false;
+        btnDrop.onclick = () => { if(gameState === 'idle') startDrop(); };
+
+        function startDrop() {
+            gameState = 'dropping';
+            tries++;
+            triesEl.innerText = tries;
+        }
+
+        function update() {
+            if (gameState === 'idle') {
+                if (keys['ArrowLeft'] || touchLeft) claw.x = Math.max(25, claw.x - config.clawSpeed);
+                if (keys['ArrowRight'] || touchRight) claw.x = Math.min(config.width - 25, claw.x + config.clawSpeed);
+                if (keys['Space']) startDrop();
+            }
+
+            if (gameState === 'dropping') {
+                claw.ropeLen += config.dropSpeed;
+                if (claw.ropeLen >= claw.maxRopeLen) {
+                    checkCatch();
+                    gameState = 'lifting';
+                }
+            }
+
+            if (gameState === 'lifting') {
+                claw.ropeLen -= config.dropSpeed;
+                if (claw.grabbedDoll) {
+                    claw.grabbedDoll.x = claw.x;
+                    claw.grabbedDoll.y = claw.y + claw.ropeLen + 25;
+                }
+                if (claw.ropeLen <= 50) {
+                    claw.ropeLen = 50;
+                    gameState = 'returning';
+                }
+            }
+
+            if (gameState === 'returning') {
+                const exitX = 40;
+                if (claw.x > exitX) {
+                    claw.x -= config.clawSpeed;
+                    if (claw.grabbedDoll) claw.grabbedDoll.x = claw.x;
+                } else {
+                    if (claw.grabbedDoll) {
+                        score++;
+                        scoreEl.innerText = score;
+                        showMessage("성공! 🎉", true);
+                        dolls = dolls.filter(d => d !== claw.grabbedDoll);
+                        claw.grabbedDoll = null;
+                        if(dolls.length === 0) setTimeout(initDolls, 1000); 
+                    } else {
+                        showMessage("실패! 💨", false);
+                    }
+                    gameState = 'idle';
+                }
+            }
+        }
+
+        function checkCatch() {
+            const clawBottomX = claw.x;
+            const clawBottomY = claw.y + claw.ropeLen + 20;
+            let closestDoll = null;
+            let minDistance = 999;
+
+            for (let doll of dolls) {
+                const dx = clawBottomX - doll.x;
+                const dy = clawBottomY - doll.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < doll.radius + config.hitboxMargin) {
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestDoll = doll;
+                    }
+                }
+            }
+            claw.grabbedDoll = closestDoll;
+        }
+
+        function showMessage(text, isSuccess) {
+            msgText.innerText = text;
+            msgText.className = isSuccess 
+                ? "bg-white text-black px-6 py-3 rounded-full font-bold shadow-lg text-xl"
+                : "bg-gray-800 text-white px-6 py-3 rounded-full font-bold shadow-lg text-xl";
+            msgBox.style.opacity = '1';
+            setTimeout(() => msgBox.style.opacity = '0', 1000);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 가이드라인 (설정된 경우에만 그림)
+            if (config.showGuide) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'; 
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(claw.x, 0);
+                ctx.lineTo(claw.x, config.height);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            ctx.fillStyle = '#111';
+            ctx.fillRect(10, config.height - 30, 60, 30);
+
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(claw.x, 0);
+            ctx.lineTo(claw.x, claw.y + claw.ropeLen);
+            ctx.stroke();
+
+            dolls.forEach(doll => {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(doll.x, doll.y, doll.radius, 0, Math.PI * 2);
+                ctx.fillStyle = doll.color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = `${doll.radius * 1.2}px Arial`;
+                ctx.fillText(doll.emoji, doll.x, doll.y);
+                ctx.restore();
+            });
+
+            const headSize = 30;
+            ctx.fillStyle = '#aaa';
+            ctx.fillRect(claw.x - headSize/2, claw.y + claw.ropeLen, headSize, 8);
+            
+            const isOpening = (gameState === 'dropping');
+            const armAngle = isOpening ? 0.4 : (claw.grabbedDoll ? 0.1 : 0.3);
+            
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(claw.x - 10, claw.y + claw.ropeLen + 5);
+            ctx.quadraticCurveTo(
+                claw.x - 25 - (armAngle * 20), claw.y + claw.ropeLen + 15,
+                claw.x - 15, claw.y + claw.ropeLen + 35
+            );
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(claw.x + 10, claw.y + claw.ropeLen + 5);
+            ctx.quadraticCurveTo(
+                claw.x + 25 + (armAngle * 20), claw.y + claw.ropeLen + 15,
+                claw.x + 15, claw.y + claw.ropeLen + 35
+            );
+            ctx.stroke();
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        setDifficulty('normal'); 
+        loop();
+    </script>
 </body>
 </html>
