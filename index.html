@@ -12,8 +12,8 @@
             font-family: sans-serif;
         }
         #page-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: auto 1fr; /* Header is auto-sized, game area takes the rest */
             height: 100vh;
             background-color: #f0f0f0;
         }
@@ -24,7 +24,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0; /* Prevent header from shrinking */
+            z-index: 10; /* Ensure header is always on top */
         }
         header h1 {
             margin: 0;
@@ -49,7 +49,6 @@
             cursor: not-allowed;
         }
         #game-area {
-            flex-grow: 1; /* Take up remaining vertical space */
             overflow-y: scroll; /* Allow vertical scrolling */
             -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
             scroll-snap-type: y mandatory; /* Enable vertical scroll snapping */
