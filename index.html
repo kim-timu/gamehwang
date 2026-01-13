@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인형뽑기</title>
+    <title>미니 게임</title>
     <style>
         body {
             margin: 0;
@@ -33,9 +33,10 @@
         .container {
             flex-grow: 1;
             width: 100%;
+            display: flex;
         }
         iframe {
-            width: 100%;
+            width: 50%;
             height: 100%;
             border: none;
         }
@@ -43,13 +44,14 @@
 </head>
 <body>
     <header>
-        <h1>인형뽑기 게임</h1>
+        <h1>미니 게임</h1>
         <nav>
             <a href="/">홈</a>
         </nav>
     </header>
     <div class="container">
         <iframe src="https://cragam.pages.dev/"></iframe>
+        <iframe src="https://jire.pages.dev/"></iframe>
     </div>
 </body>
 </html>
