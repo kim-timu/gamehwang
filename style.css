@@ -1,0 +1,43 @@
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+    border-bottom: 2px solid #fff;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 20px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.game-showcase {
+    padding: 20px;
+}
+
+.game-card {
+    background-color: #222;
+    border: 2px solid #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+}
+
+footer {
+    padding: 20px;
+    border-top: 2px solid #fff;
+}

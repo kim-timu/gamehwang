@@ -1,143 +1,40 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>미니 게임</title>
-    <style>
-        body, html {
-            margin: 0;
-            height: 100%;
-            overflow: hidden; /* Prevent unwanted scroll on the main page */
-            font-family: sans-serif;
-        }
-        #page-container {
-            display: grid;
-            grid-template-rows: auto 1fr; /* Header is auto-sized, game area takes the rest */
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10; /* Ensure header is always on top */
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-        header nav button {
-            color: white;
-            background-color: #555;
-            border: none;
-            padding: 0.5rem 1rem;
-            text-decoration: none;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        header nav button:hover {
-            background-color: #777;
-        }
-        header nav button:disabled {
-            background-color: #444;
-            color: #888;
-            cursor: not-allowed;
-        }
-        #game-area {
-            overflow-y: scroll; /* Allow vertical scrolling */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-            scroll-snap-type: y mandatory; /* Enable vertical scroll snapping */
-        }
-        iframe {
-            width: 100%;
-            height: 100%; /* Make iframe fill the game area */
-            border: none;
-            display: block;
-            scroll-snap-align: start; /* Snap to the start of each game */
-        }
-    </style>
+    <title>Retro Game Zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="page-container">
-        <header>
-            <h1>미니 게임</h1>
-            <nav>
-                <button id="prev-game">이전 게임</button>
-                <button id="next-game">다음 게임</button>
-            </nav>
-        </header>
-        <div id="game-area">
-            <iframe src="game1.html"></iframe>
-            <iframe src="game2.html"></iframe>
-            <iframe src="game3.html"></iframe>
-            <iframe src="game4.html"></iframe>
-            <iframe src="game5.html"></iframe>
-        </div>
-    </div>
-    <script>
-        const gameArea = document.getElementById('game-area');
-        const iframes = Array.from(gameArea.getElementsByTagName('iframe'));
-        const prevButton = document.getElementById('prev-game');
-        const nextButton = document.getElementById('next-game');
+    <header>
+        <h1>Retro Game Zone</h1>
+        <nav>
+            <ul>
+                <li><a href="https://lovable.dev/projects/54836fc0-32cc-45fd-a985-b4c3a554af3c">게임하러가기</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        let currentGameIndex = 0;
-        // A flag to ignore scroll events triggered by button clicks
-        let programmaticScroll = false;
-        let scrollEndTimer;
+    <main>
+        <section class="game-showcase">
+            <h2>Featured Game</h2>
+            <div class="game-card">
+                <h3>Space Invaders</h3>
+                <p>The classic arcade shooter.</p>
+            </div>
+            <div class="game-card">
+                <h3>Pac-Man</h3>
+                <p>Eat all the dots and avoid the ghosts.</p>
+            </div>
+        </section>
+    </main>
 
-        function updateButtonStates() {
-            prevButton.disabled = currentGameIndex === 0;
-            nextButton.disabled = currentGameIndex === iframes.length - 1;
-        }
+    <footer>
+        <p>&copy; 2023 Retro Game Zone</p>
+    </footer>
 
-        function showGame(index) {
-            if (index < 0 || index >= iframes.length) {
-                return;
-            }
-            programmaticScroll = true;
-            iframes[index].scrollIntoView({ behavior: 'smooth' });
-            currentGameIndex = index;
-            updateButtonStates();
-            
-            // When smooth scroll is finished, reset the flag.
-            // We use a timer as there's no universal 'scrollend' event.
-            clearTimeout(scrollEndTimer);
-            scrollEndTimer = setTimeout(() => {
-                programmaticScroll = false;
-            }, 1000); // 1 second should be enough for smooth scroll to finish
-        }
-
-        nextButton.addEventListener('click', () => {
-            showGame(currentGameIndex + 1);
-        });
-
-        prevButton.addEventListener('click', () => {
-            showGame(currentGameIndex - 1);
-        });
-        
-        // Debouncer for scroll event
-        let scrollDebounceTimer;
-        gameArea.addEventListener('scroll', () => {
-            if (programmaticScroll) {
-                return; // Ignore scroll events caused by our buttons
-            }
-            clearTimeout(scrollDebounceTimer);
-            scrollDebounceTimer = setTimeout(() => {
-                const newIndex = Math.round(gameArea.scrollTop / gameArea.clientHeight);
-                if (newIndex !== currentGameIndex) {
-                    currentGameIndex = newIndex;
-                    updateButtonStates();
-                }
-            }, 150); // A short delay to wait for scroll to settle
-        });
-
-        // Initial state
-        updateButtonStates();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
